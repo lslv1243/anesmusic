@@ -1,5 +1,5 @@
 //
-//  ArtistsViewController.swift
+//  AlbumsViewController.swift
 //  anesmusic
 //
 //  Created by Leonardo da Silva on 09/07/19.
@@ -8,16 +8,16 @@
 
 import UIKit
 
-class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetching, InfinityScrollViewModelDelegate {
+class AlbumsViewController: UITableViewController, UITableViewDataSourcePrefetching, InfinityScrollViewModelDelegate {
   let apiClient: ApiClient
-  let genre: GenreItem
-  let viewModel: InfinityScrollViewModel<ArtistItem>
+  let artist: ArtistItem
+  let viewModel: InfinityScrollViewModel<AlbumItem>
   
-  init(apiClient: ApiClient, genre: GenreItem) {
+  init(apiClient: ApiClient, artist: ArtistItem) {
     self.apiClient = apiClient
-    self.genre = genre
+    self.artist = artist
     viewModel = InfinityScrollViewModel { page in
-      apiClient.getTopArtists(genre: genre.name, page: page)
+      apiClient.getTopAlbums(artistId: artist.id, page: page)
     }
     
     super.init(nibName: nil, bundle: nil)
@@ -32,7 +32,7 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    navigationItem.title = genre.name
+    navigationItem.title = artist.name
     
     refreshControl = UIRefreshControl()
     tableView.refreshControl = refreshControl
@@ -43,20 +43,14 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
     viewModel.reload()
   }
   
-  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    let artist = viewModel.items[indexPath.row]
-    let albumsViewController = AlbumsViewController(apiClient: apiClient, artist: artist)
-    navigationController!.pushViewController(albumsViewController, animated: true)
-  }
-  
   override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    return "Artistas"
+    return "Álbuns"
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-    let artist = viewModel.items[indexPath.row]
-    cell.textLabel!.text = artist.name
+    let album = viewModel.items[indexPath.row]
+    cell.textLabel!.text = album.name
     return cell
   }
   

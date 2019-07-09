@@ -111,7 +111,7 @@ class ApiClient {
       typealias Image = Dictionary<String, String>
     }
     
-    let url = "http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=\(artistId)&api_key=\(apiKey)&format=json&limit=\(pageSize)&page=\(page)"
+    let url = "https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=\(artistId)&api_key=\(apiKey)&format=json&limit=\(pageSize)&page=\(page)"
     
     return Alamofire.request(url)
       .responseData()

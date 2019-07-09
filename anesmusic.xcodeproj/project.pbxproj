@@ -15,6 +15,7 @@
 		7226E18A22D3F31A00370D23 /* ApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7226E18922D3F31A00370D23 /* ApiClient.swift */; };
 		729D89A822D50494001D7956 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 729D89A722D50493001D7956 /* SDWebImage.framework */; };
 		729D89AA22D520A2001D7956 /* InfinityScrollViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729D89A922D520A2001D7956 /* InfinityScrollViewModel.swift */; };
+		729D89AC22D52322001D7956 /* AlbumsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729D89AB22D52322001D7956 /* AlbumsViewController.swift */; };
 		72C0A1AA22D4D6D700E823FE /* GenresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C0A1A922D4D6D700E823FE /* GenresViewController.swift */; };
 		72C0A1AE22D4F24100E823FE /* ArtistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C0A1AD22D4F24100E823FE /* ArtistsViewController.swift */; };
 		72C0A1B222D4F3CE00E823FE /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72C0A1AF22D4F3CE00E823FE /* Alamofire.framework */; };
@@ -45,6 +46,7 @@
 		7226E18922D3F31A00370D23 /* ApiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiClient.swift; sourceTree = "<group>"; };
 		729D89A722D50493001D7956 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImage.framework; path = Carthage/Build/iOS/SDWebImage.framework; sourceTree = "<group>"; };
 		729D89A922D520A2001D7956 /* InfinityScrollViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfinityScrollViewModel.swift; sourceTree = "<group>"; };
+		729D89AB22D52322001D7956 /* AlbumsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsViewController.swift; sourceTree = "<group>"; };
 		72C0A1A922D4D6D700E823FE /* GenresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenresViewController.swift; sourceTree = "<group>"; };
 		72C0A1AD22D4F24100E823FE /* ArtistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistsViewController.swift; sourceTree = "<group>"; };
 		72C0A1AF22D4F3CE00E823FE /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				72C0A1A922D4D6D700E823FE /* GenresViewController.swift */,
 				72C0A1AD22D4F24100E823FE /* ArtistsViewController.swift */,
 				729D89A922D520A2001D7956 /* InfinityScrollViewModel.swift */,
+				729D89AB22D52322001D7956 /* AlbumsViewController.swift */,
 			);
 			path = anesmusic;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				729D89AC22D52322001D7956 /* AlbumsViewController.swift in Sources */,
 				72C0A1AA22D4D6D700E823FE /* GenresViewController.swift in Sources */,
 				729D89AA22D520A2001D7956 /* InfinityScrollViewModel.swift in Sources */,
 				7226E16322D3C12700370D23 /* RootViewController.swift in Sources */,
