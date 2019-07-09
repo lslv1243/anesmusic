@@ -35,7 +35,7 @@ class ApiClient {
   
   private let decoder = JSONDecoder()
   
-  func getGenres(page: Int) -> Promise<[Genre]> {
+  func getGenres() -> Promise<[Genre]> {
     struct Response: Decodable {
       let toptags: TopTags
       
@@ -48,7 +48,7 @@ class ApiClient {
       }
     }
     
-    let url = "https://ws.audioscrobbler.com/2.0/?method=tag.getTopTags&api_key=\(apiKey)&format=json&limit=\(pageSize)&page=\(page)"
+    let url = "https://ws.audioscrobbler.com/2.0/?method=tag.getTopTags&api_key=\(apiKey)&format=json"
     
     return Alamofire.request(url)
       .responseData()

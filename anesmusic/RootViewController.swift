@@ -9,21 +9,13 @@
 import UIKit
 import Alamofire
 
-class RootViewController: UIViewController {
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
+class RootViewController: UINavigationController {
+  let apiClient = ApiClient()
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
     
-    let apiClient = ApiClient()
-    apiClient.getGenres(page: 0)
-      .done { genres in
-        for genre in genres {
-          print(genre)
-        }
-      }
-      .catch { _ in
-        print("Não foi possível carregar os gêneros!")
-      }
+    pushViewController(GenresViewController(apiClient: apiClient), animated: false)
   }
 }
 

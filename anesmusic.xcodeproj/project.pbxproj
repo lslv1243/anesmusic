@@ -16,6 +16,7 @@
 		7226E18A22D3F31A00370D23 /* ApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7226E18922D3F31A00370D23 /* ApiClient.swift */; };
 		7226E18D22D4D00B00370D23 /* PMKAlamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7226E18B22D4D00B00370D23 /* PMKAlamofire.framework */; };
 		7226E18E22D4D00B00370D23 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7226E18C22D4D00B00370D23 /* PromiseKit.framework */; };
+		72C0A1AA22D4D6D700E823FE /* GenresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C0A1A922D4D6D700E823FE /* GenresViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		7226E18922D3F31A00370D23 /* ApiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiClient.swift; sourceTree = "<group>"; };
 		7226E18B22D4D00B00370D23 /* PMKAlamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PMKAlamofire.framework; path = Carthage/Build/iOS/PMKAlamofire.framework; sourceTree = "<group>"; };
 		7226E18C22D4D00B00370D23 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
+		72C0A1A922D4D6D700E823FE /* GenresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenresViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 				7226E16922D3C12900370D23 /* LaunchScreen.storyboard */,
 				7226E16C22D3C12900370D23 /* Info.plist */,
 				7226E18922D3F31A00370D23 /* ApiClient.swift */,
+				72C0A1A922D4D6D700E823FE /* GenresViewController.swift */,
 			);
 			path = anesmusic;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72C0A1AA22D4D6D700E823FE /* GenresViewController.swift in Sources */,
 				7226E16322D3C12700370D23 /* RootViewController.swift in Sources */,
 				7226E16122D3C12700370D23 /* AppDelegate.swift in Sources */,
 				7226E18A22D3F31A00370D23 /* ApiClient.swift in Sources */,
