@@ -7,14 +7,23 @@
 //
 
 import UIKit
+import Alamofire
 
 class ViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view.
+    
+    let apiClient = ApiClient()
+    apiClient.getGenres(page: 0)
+      .done { genres in
+        for genre in genres {
+          print(genre)
+        }
+      }
+      .catch { _ in
+        print("Não foi possível carregar os gêneros!")
+      }
   }
-
-
 }
 

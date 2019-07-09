@@ -13,6 +13,10 @@
 		7226E16822D3C12900370D23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7226E16722D3C12900370D23 /* Assets.xcassets */; };
 		7226E16B22D3C12900370D23 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7226E16922D3C12900370D23 /* LaunchScreen.storyboard */; };
 		7226E17622D3C12900370D23 /* anesmusicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7226E17522D3C12900370D23 /* anesmusicTests.swift */; };
+		7226E18622D3F05A00370D23 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7226E18522D3F05A00370D23 /* Alamofire.framework */; };
+		7226E18A22D3F31A00370D23 /* ApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7226E18922D3F31A00370D23 /* ApiClient.swift */; };
+		7226E18D22D4D00B00370D23 /* PMKAlamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7226E18B22D4D00B00370D23 /* PMKAlamofire.framework */; };
+		7226E18E22D4D00B00370D23 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7226E18C22D4D00B00370D23 /* PromiseKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +40,10 @@
 		7226E17122D3C12900370D23 /* anesmusicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = anesmusicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7226E17522D3C12900370D23 /* anesmusicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = anesmusicTests.swift; sourceTree = "<group>"; };
 		7226E17722D3C12900370D23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7226E18522D3F05A00370D23 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		7226E18922D3F31A00370D23 /* ApiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiClient.swift; sourceTree = "<group>"; };
+		7226E18B22D4D00B00370D23 /* PMKAlamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PMKAlamofire.framework; path = Carthage/Build/iOS/PMKAlamofire.framework; sourceTree = "<group>"; };
+		7226E18C22D4D00B00370D23 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +51,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7226E18E22D4D00B00370D23 /* PromiseKit.framework in Frameworks */,
+				7226E18D22D4D00B00370D23 /* PMKAlamofire.framework in Frameworks */,
+				7226E18622D3F05A00370D23 /* Alamofire.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,6 +70,9 @@
 		7226E15422D3C12700370D23 = {
 			isa = PBXGroup;
 			children = (
+				7226E18B22D4D00B00370D23 /* PMKAlamofire.framework */,
+				7226E18C22D4D00B00370D23 /* PromiseKit.framework */,
+				7226E18522D3F05A00370D23 /* Alamofire.framework */,
 				7226E15F22D3C12700370D23 /* anesmusic */,
 				7226E17422D3C12900370D23 /* anesmusicTests */,
 				7226E15E22D3C12700370D23 /* Products */,
@@ -83,6 +97,7 @@
 				7226E16722D3C12900370D23 /* Assets.xcassets */,
 				7226E16922D3C12900370D23 /* LaunchScreen.storyboard */,
 				7226E16C22D3C12900370D23 /* Info.plist */,
+				7226E18922D3F31A00370D23 /* ApiClient.swift */,
 			);
 			path = anesmusic;
 			sourceTree = "<group>";
@@ -106,6 +121,7 @@
 				7226E15922D3C12700370D23 /* Sources */,
 				7226E15A22D3C12700370D23 /* Frameworks */,
 				7226E15B22D3C12700370D23 /* Resources */,
+				7226E18222D3D3E300370D23 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -192,6 +208,32 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		7226E18222D3D3E300370D23 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PMKAlamofire.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Alamofire.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PMKAlamofire.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PromiseKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		7226E15922D3C12700370D23 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -199,6 +241,7 @@
 			files = (
 				7226E16322D3C12700370D23 /* ViewController.swift in Sources */,
 				7226E16122D3C12700370D23 /* AppDelegate.swift in Sources */,
+				7226E18A22D3F31A00370D23 /* ApiClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,13 +405,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 85H657AN2C;
+				DEVELOPMENT_TEAM = 6TQ42569MR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/ios-sdk",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = anesmusic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lslv1243.anesmusic;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.anesmusic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -382,13 +430,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 85H657AN2C;
+				DEVELOPMENT_TEAM = 6TQ42569MR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/ios-sdk",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = anesmusic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lslv1243.anesmusic;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dev.anesmusic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
