@@ -89,7 +89,7 @@ class ApiClient {
           return ArtistItem(
             id: mbid,
             name: artist.name,
-            imageUrl: artist.image.last!["#text"]!
+            imageUrl: artist.image[1]["#text"]!
           )
         }
       }
@@ -119,7 +119,7 @@ class ApiClient {
         let data = try! self.decoder.decode(Response.self, from: response.data)
         return data.topalbums.album.map { AlbumItem(
           name: $0.name,
-          coverUrl: $0.image.last!["#text"]!
+          coverUrl: $0.image[1]["#text"]!
         ) }
       }
   }

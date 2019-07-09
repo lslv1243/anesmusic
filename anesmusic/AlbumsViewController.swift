@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class AlbumsViewController: UITableViewController, UITableViewDataSourcePrefetching, InfinityScrollViewModelDelegate {
   let apiClient: ApiClient
@@ -48,9 +49,15 @@ class AlbumsViewController: UITableViewController, UITableViewDataSourcePrefetch
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
+    let cellIdentifier = "ALBUM_CELL"
+    let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
+      ?? UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
     let album = viewModel.items[indexPath.row]
     cell.textLabel!.text = album.name
+    cell.imageView!.sd_setImage(
+      with: URL(string: album.coverUrl),
+      placeholderImage: UIImage(named: "placeholder")
+    )
     return cell
   }
   

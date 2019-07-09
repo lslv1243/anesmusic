@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetching, InfinityScrollViewModelDelegate {
   let apiClient: ApiClient
@@ -57,6 +58,10 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
     let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
     let artist = viewModel.items[indexPath.row]
     cell.textLabel!.text = artist.name
+    cell.imageView!.sd_setImage(
+      with: URL(string: artist.imageUrl),
+      placeholderImage: UIImage(named: "placeholder")
+    )
     return cell
   }
   
