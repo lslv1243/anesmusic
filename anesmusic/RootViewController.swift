@@ -9,7 +9,7 @@
 import UIKit
 import Alamofire
 
-class ViewController: UIViewController {
+class RootViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
