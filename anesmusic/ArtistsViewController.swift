@@ -8,12 +8,18 @@
 
 import UIKit
 
-class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetching, ArtistsViewModelDelegate {
-  let viewModel: ArtistsViewModel
+class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetching, InfinityScrollViewModelDelegate {
+  let genre: GenreItem
+  let viewModel: InfinityScrollViewModel<ArtistItem>
   
   init(apiClient: ApiClient, genre: GenreItem) {
-    viewModel = ArtistsViewModel(apiClient: apiClient, genre: genre)
+    self.genre = genre
+    viewModel = InfinityScrollViewModel { page in
+      apiClient.getTopArtists(genre: genre.name, page: page)
+    }
+    
     super.init(nibName: nil, bundle: nil)
+    
     viewModel.delegate = self
   }
   
@@ -24,21 +30,21 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    navigationItem.title = viewModel.genre.name
+    navigationItem.title = genre.name
     
     refreshControl = UIRefreshControl()
     tableView.refreshControl = refreshControl
-    refreshControl!.addTarget(viewModel, action: #selector(viewModel.reloadArtists), for: .valueChanged)
+    refreshControl!.addTarget(viewModel, action: #selector(viewModel.reload), for: .valueChanged)
     
     tableView.prefetchDataSource = self
     
-    viewModel.reloadArtists()
+    viewModel.reload()
   }
   
   func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
     // if table view wants to prefetch last row, fetch next page
-    if (indexPaths.contains { $0.row == viewModel.artists.count - 1 }) {
-      viewModel.loadMoreArtists()
+    if (indexPaths.contains { $0.row == viewModel.items.count - 1 }) {
+      viewModel.loadMore()
     }
   }
   
@@ -48,7 +54,7 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-    let artist = viewModel.artists[indexPath.row]
+    let artist = viewModel.items[indexPath.row]
     cell.textLabel!.text = artist.name
     return cell
   }
@@ -58,90 +64,27 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return viewModel.artists.count
+    return viewModel.items.count
   }
   
-  func artistsViewModelWillReload() {
+  func infinityScrollViewModelWillReload() {
     refreshControl!.beginRefreshing()
   }
   
-  func artistsViewModelDidReload(error: Error?) {
+  func infinityScrollViewModelDidReload(error: Error?) {
     if (error == nil) {
       tableView.reloadData()
     }
     refreshControl!.endRefreshing()
   }
   
-  func artistsViewModelWillLoadMore() {
+  func infinityScrollViewModelWillLoadMore() {
     
   }
   
-  func artistsViewModelDidLoadMore(error: Error?) {
+  func infinityScrollViewModelDidLoadMore(error: Error?) {
     if (error == nil) {
       tableView.reloadData()
     }
   }
-}
-
-class ArtistsViewModel {
-  let apiClient: ApiClient
-  let genre: GenreItem
-  
-  private(set) var currentPage = 0
-  private(set) var isFetching = false
-  private(set) var hasMore = true
-  private(set) var artists: [ArtistItem] = []
-  weak var delegate: ArtistsViewModelDelegate?
-  
-  init(apiClient: ApiClient, genre: GenreItem) {
-    self.apiClient = apiClient
-    self.genre = genre
-  }
-  
-  @objc func reloadArtists() {
-    guard !isFetching else { return }
-    
-    isFetching = true
-    delegate?.artistsViewModelWillReload()
-    currentPage = 0
-    apiClient.getTopArtists(genre: genre.name, page: 0)
-      .done { artists in
-        self.artists = artists
-        self.delegate?.artistsViewModelDidReload(error: nil)
-      }
-      .catch { error in
-        self.delegate?.artistsViewModelDidReload(error: error)
-      }
-      .finally {
-        self.isFetching = false
-      }
-  }
-  
-  func loadMoreArtists() {
-    guard !isFetching && hasMore else { return }
-    
-    isFetching = true
-    delegate?.artistsViewModelWillLoadMore()
-    currentPage += 1
-    apiClient.getTopArtists(genre: genre.name, page: currentPage)
-      .done { artists in
-        self.hasMore = artists.count != 0
-        self.artists.append(contentsOf: artists)
-        self.delegate?.artistsViewModelDidLoadMore(error: nil)
-      }
-      .catch { error in
-        self.currentPage -= 1
-        self.delegate?.artistsViewModelDidLoadMore(error: error)
-      }
-      .finally {
-        self.isFetching = false
-      }
-  }
-}
-
-protocol ArtistsViewModelDelegate: class {
-  func artistsViewModelWillReload()
-  func artistsViewModelDidReload(error: Error?)
-  func artistsViewModelWillLoadMore()
-  func artistsViewModelDidLoadMore(error: Error?)
 }
