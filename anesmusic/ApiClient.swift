@@ -28,7 +28,7 @@ struct AlbumItem {
 
 class ApiClient {
   private let apiKey: String
-  private let pageSize = 20
+  private let pageSize = 50
   
   init(apiKey: String) {
     self.apiKey = apiKey
@@ -69,7 +69,7 @@ class ApiClient {
       
       struct Artist: Decodable {
         let name: String
-        let mbid: String
+        let mbid: String?
         let image: [Image]
       }
       
@@ -83,11 +83,15 @@ class ApiClient {
       .responseData()
       .map { response in
         let data = try! self.decoder.decode(Response.self, from: response.data)
-        return data.topartists.artist.map { ArtistItem(
-          id: $0.mbid,
-          name: $0.name,
-          imageUrl: $0.image[4]["#text"]!
-        ) }
+        return data.topartists.artist.compactMap { artist in
+          // some artists don't have the attribute "mbid", they can't be used to query for albums
+          guard let mbid = artist.mbid else { return nil }
+          return ArtistItem(
+            id: mbid,
+            name: artist.name,
+            imageUrl: artist.image.last!["#text"]!
+          )
+        }
       }
   }
   
@@ -115,7 +119,7 @@ class ApiClient {
         let data = try! self.decoder.decode(Response.self, from: response.data)
         return data.topalbums.album.map { AlbumItem(
           name: $0.name,
-          coverUrl: $0.image[3]["#text"]!
+          coverUrl: $0.image.last!["#text"]!
         ) }
       }
   }

@@ -35,15 +35,13 @@ class GenresViewController: UITableViewController {
   
   @objc private func loadGenres() {
     refreshControl!.beginRefreshing()
-    print("will load genres")
     apiClient.getTopGenres()
       .done { genres in
         self.genres = genres
         self.tableView.reloadData()
-        print("successfully loaded genres")
       }
-      .catch { _ in
-        print("could not load genres")
+      .catch { error in
+        print("could not load genres", error)
       }
       .finally {
         self.refreshControl!.endRefreshing()

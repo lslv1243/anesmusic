@@ -13,6 +13,7 @@
 		7226E16B22D3C12900370D23 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7226E16922D3C12900370D23 /* LaunchScreen.storyboard */; };
 		7226E17622D3C12900370D23 /* anesmusicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7226E17522D3C12900370D23 /* anesmusicTests.swift */; };
 		7226E18A22D3F31A00370D23 /* ApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7226E18922D3F31A00370D23 /* ApiClient.swift */; };
+		729D89A822D50494001D7956 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 729D89A722D50493001D7956 /* SDWebImage.framework */; };
 		72C0A1AA22D4D6D700E823FE /* GenresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C0A1A922D4D6D700E823FE /* GenresViewController.swift */; };
 		72C0A1AE22D4F24100E823FE /* ArtistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C0A1AD22D4F24100E823FE /* ArtistsViewController.swift */; };
 		72C0A1B222D4F3CE00E823FE /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72C0A1AF22D4F3CE00E823FE /* Alamofire.framework */; };
@@ -41,6 +42,7 @@
 		7226E17522D3C12900370D23 /* anesmusicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = anesmusicTests.swift; sourceTree = "<group>"; };
 		7226E17722D3C12900370D23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7226E18922D3F31A00370D23 /* ApiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiClient.swift; sourceTree = "<group>"; };
+		729D89A722D50493001D7956 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImage.framework; path = Carthage/Build/iOS/SDWebImage.framework; sourceTree = "<group>"; };
 		72C0A1A922D4D6D700E823FE /* GenresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenresViewController.swift; sourceTree = "<group>"; };
 		72C0A1AD22D4F24100E823FE /* ArtistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistsViewController.swift; sourceTree = "<group>"; };
 		72C0A1AF22D4F3CE00E823FE /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
@@ -53,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				729D89A822D50494001D7956 /* SDWebImage.framework in Frameworks */,
 				72C0A1B422D4F3CE00E823FE /* PromiseKit.framework in Frameworks */,
 				72C0A1B322D4F3CE00E823FE /* PMKAlamofire.framework in Frameworks */,
 				72C0A1B222D4F3CE00E823FE /* Alamofire.framework in Frameworks */,
@@ -72,6 +75,7 @@
 		7226E15422D3C12700370D23 = {
 			isa = PBXGroup;
 			children = (
+				729D89A722D50493001D7956 /* SDWebImage.framework */,
 				72C0A1AF22D4F3CE00E823FE /* Alamofire.framework */,
 				72C0A1B022D4F3CE00E823FE /* PMKAlamofire.framework */,
 				72C0A1B122D4F3CE00E823FE /* PromiseKit.framework */,
@@ -222,6 +226,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PMKAlamofire.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/SDWebImage.framework",
 			);
 			outputFileListPaths = (
 			);
@@ -229,6 +234,7 @@
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Alamofire.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PMKAlamofire.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PromiseKit.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SDWebImage.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
