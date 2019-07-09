@@ -1,5 +1,5 @@
 //
-//  GenresViewController.swift
+//  ArtistsViewController.swift
 //  anesmusic
 //
 //  Created by Leonardo da Silva on 09/07/19.
@@ -8,12 +8,14 @@
 
 import UIKit
 
-class GenresViewController: UITableViewController {
+class ArtistsViewController: UITableViewController {
   let apiClient: ApiClient
-  var genres: [GenreItem] = []
+  let genre: GenreItem
+  var artists: [ArtistItem] = []
   
-  init(apiClient: ApiClient) {
+  init(apiClient: ApiClient, genre: GenreItem) {
     self.apiClient = apiClient
+    self.genre = genre
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -24,42 +26,36 @@ class GenresViewController: UITableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    navigationItem.title = "Gêneros"
+    navigationItem.title = "Artistas"
     
     refreshControl = UIRefreshControl()
     tableView.refreshControl = refreshControl
-    refreshControl!.addTarget(self, action: #selector(loadGenres), for: .valueChanged)
+    refreshControl!.addTarget(self, action: #selector(loadArtists), for: .valueChanged)
     
-    loadGenres()
+    loadArtists()
   }
   
-  @objc private func loadGenres() {
+  @objc private func loadArtists() {
     refreshControl!.beginRefreshing()
-    print("will load genres")
-    apiClient.getTopGenres()
-      .done { genres in
-        self.genres = genres
+    print("will load artists")
+    apiClient.getTopArtists(genre: genre.name, page: 0)
+      .done { artists in
+        self.artists = artists
         self.tableView.reloadData()
-        print("successfully loaded genres")
+        print("successfully loaded artists")
       }
       .catch { _ in
-        print("could not load genres")
+        print("could not load artists")
       }
       .finally {
-        self.refreshControl!.endRefreshing()
+          self.refreshControl!.endRefreshing()
       }
-  }
-  
-  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    let genre = genres[indexPath.row]
-    let artistsViewController = ArtistsViewController(apiClient: apiClient, genre: genre)
-    navigationController!.pushViewController(artistsViewController, animated: true)
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-    let genre = genres[indexPath.row]
-    cell.textLabel!.text = genre.name
+    let artist = artists[indexPath.row]
+    cell.textLabel!.text = artist.name
     return cell
   }
   
@@ -68,6 +64,7 @@ class GenresViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return genres.count
+    return artists.count
   }
+
 }

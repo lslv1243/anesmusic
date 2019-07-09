@@ -11,31 +11,32 @@ import Alamofire
 import PromiseKit
 import PMKAlamofire
 
-struct Genre {
+struct GenreItem {
   let name: String
 }
 
-struct Artist {
+struct ArtistItem {
   let id: String
   let name: String
-  let genre: String
   let imageUrl: String
 }
 
-struct Album {
+struct AlbumItem {
   let name: String
-  let genre: String
-  let year: String
   let coverUrl: String
 }
 
 class ApiClient {
-  private let apiKey = "93e9a520b0bd3e64a3a0d1be9c2cd5ea"
+  private let apiKey: String
   private let pageSize = 20
+  
+  init(apiKey: String) {
+    self.apiKey = apiKey
+  }
   
   private let decoder = JSONDecoder()
   
-  func getGenres() -> Promise<[Genre]> {
+  func getTopGenres() -> Promise<[GenreItem]> {
     struct Response: Decodable {
       let toptags: TopTags
       
@@ -54,11 +55,11 @@ class ApiClient {
       .responseData()
       .map { response in
         let data = try! self.decoder.decode(Response.self, from: response.data)
-        return data.toptags.tag.map { Genre(name: $0.name) }
+        return data.toptags.tag.map { GenreItem(name: $0.name) }
       }
   }
   
-  func getArtists(genre: String, page: Int) -> Promise<[Artist]> {
+  func getTopArtists(genre: String, page: Int) -> Promise<[ArtistItem]> {
     struct Response: Decodable {
       let topartists: TopArtists
       
@@ -75,22 +76,22 @@ class ApiClient {
       typealias Image = Dictionary<String, String>
     }
     
-    let url = "https://ws.audioscrobbler.com/2.0/?method=tag.gettopartists&tag=\(genre)&api_key=\(apiKey)&format=json&limit=\(pageSize)&page=\(page)"
+    let genreUrl = genre.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+    let url = "https://ws.audioscrobbler.com/2.0/?method=tag.gettopartists&tag=\(genreUrl)&api_key=\(apiKey)&format=json&limit=\(pageSize)&page=\(page)"
     
     return Alamofire.request(url)
       .responseData()
       .map { response in
         let data = try! self.decoder.decode(Response.self, from: response.data)
-        return data.topartists.artist.map { Artist(
+        return data.topartists.artist.map { ArtistItem(
           id: $0.mbid,
           name: $0.name,
-          genre: genre,
           imageUrl: $0.image[4]["#text"]!
         ) }
       }
   }
   
-  func getAlbums(artistId: String, page: Int) -> Promise<[Album]> {
+  func getTopAlbums(artistId: String, page: Int) -> Promise<[AlbumItem]> {
     struct Response: Decodable {
       let topalbums: TopAlbums
       
@@ -112,12 +113,10 @@ class ApiClient {
       .responseData()
       .map { response in
         let data = try! self.decoder.decode(Response.self, from: response.data)
-        return data.topalbums.album.map { Album(
+        return data.topalbums.album.map { AlbumItem(
           name: $0.name,
-          genre: "-",
-          year: "-",
           coverUrl: $0.image[3]["#text"]!
-          ) }
+        ) }
       }
   }
 }
