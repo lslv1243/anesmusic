@@ -46,12 +46,12 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
   
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let artist = viewModel.items[indexPath.row]
-    let albumsViewController = AlbumsViewController(apiClient: apiClient, artist: artist)
+    let albumsViewController = ArtistViewController(apiClient: apiClient, artist: artist)
     navigationController!.pushViewController(albumsViewController, animated: true)
   }
   
   override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    return "Artistas"
+    return "Top Artistas"
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
