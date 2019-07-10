@@ -162,7 +162,7 @@ class ApiClient {
         return ArtistInfo(
           id: data.artist.mbid,
           name: data.artist.name,
-          imageUrl: data.artist.image[1]["#text"]!,
+          imageUrl: data.artist.image[3]["#text"]!,
           genres: data.artist.tags.tag.map { GenreItem(name: $0.name) }
         )
     }

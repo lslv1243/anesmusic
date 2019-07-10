@@ -56,7 +56,10 @@ class ArtistViewController: UITableViewController {
       let cellIdentifier = "INFO_CELL"
       let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as? ArtistInfoTableViewCell
         ?? ArtistInfoTableViewCell(reuseIdentifier: cellIdentifier)
-      cell.updateInfo(artist: artist)
+      cell.updateInfo(
+        imageUrl: viewModel.artist?.imageUrl ?? artist.imageUrl,
+        artistName: viewModel.artist?.name ?? artist.name
+      )
       return cell
     case .genres:
       let cellIdentifier = "GENRE_CELL"
@@ -178,12 +181,12 @@ class ArtistInfoTableViewCell: UITableViewCell {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func updateInfo(artist: ArtistItem) {
+  func updateInfo(imageUrl: String, artistName: String) {
     artistImageView.sd_setImage(
-      with: URL(string: artist.imageUrl),
+      with: URL(string: imageUrl),
       placeholderImage: UIImage(named: "placeholder")
     )
-    artistNameLabel.text = artist.name
+    artistNameLabel.text = artistName
   }
 }
 
