@@ -21,6 +21,13 @@ struct ArtistItem {
   let imageUrl: String
 }
 
+struct ArtistInfo {
+  let id: String
+  let name: String
+  let imageUrl: String
+  let genres: [GenreItem]
+}
+
 struct AlbumItem {
   let name: String
   let coverUrl: String
@@ -122,5 +129,42 @@ class ApiClient {
           coverUrl: $0.image[1]["#text"]!
         ) }
       }
+  }
+  
+  func getInfo(artistId: String) -> Promise<ArtistInfo> {
+    struct Response: Decodable {
+      let artist: Artist
+      
+      struct Artist: Decodable {
+        let name: String
+        let mbid: String
+        let image: [Image]
+        let tags: Tags
+      }
+      
+      typealias Image = Dictionary<String, String>
+      
+      struct Tags: Decodable {
+        let tag: [Tag]
+      }
+      
+      struct Tag: Decodable {
+        let name: String
+      }
+    }
+    
+    let url = "https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=\(artistId)&api_key=\(apiKey)&format=json"
+    
+    return Alamofire.request(url)
+      .responseData()
+      .map { response in
+        let data = try! self.decoder.decode(Response.self, from: response.data)
+        return ArtistInfo(
+          id: data.artist.mbid,
+          name: data.artist.name,
+          imageUrl: data.artist.image[1]["#text"]!,
+          genres: data.artist.tags.tag.map { GenreItem(name: $0.name) }
+        )
+    }
   }
 }
