@@ -86,8 +86,10 @@ class ApiClient {
   func getTopArtists(genre: String, page: Int) -> Promise<[ArtistItem]> {
     return authenticator.getAccessToken()
       .then { accessToken -> Promise<[ArtistItem]> in
-        let genreUrl = genre.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        let genreUrl = "\"\(genre)\"".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         let url = "https://api.spotify.com/v1/search?q=genre:\(genreUrl)&type=artist&limit=\(self.pageSize)&offset=\(self.pageSize * page)"
+        
+        print(url)
        
         var headers = HTTPHeaders()
         headers["Authorization"] = "Bearer \(accessToken)"
