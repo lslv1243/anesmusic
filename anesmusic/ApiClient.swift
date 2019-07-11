@@ -47,24 +47,16 @@ class ApiClient {
     )
   }
   
-  func getTopGenres(page: Int) -> Promise<[GenreItem]> {
+  func getTopGenres() -> Promise<[GenreItem]> {
     return authenticator.getAccessToken()
       .then { accessToken -> Promise<[GenreItem]> in
-        let url = "https://api.spotify.com/v1/browse/categories?limit=\(self.pageSize)&offset=\(self.pageSize * page)"
+        let url = "https://api.spotify.com/v1/recommendations/available-genre-seeds"
         
         var headers = HTTPHeaders()
         headers["Authorization"] = "Bearer \(accessToken)"
         
         struct Response: Decodable {
-          let categories: Categories
-          
-          struct Categories: Decodable {
-            let items: [Category]
-          }
-          
-          struct Category: Decodable {
-            let name: String
-          }
+          let genres: [String]
         }
         
         return Alamofire
@@ -76,8 +68,8 @@ class ApiClient {
           .responseData()
           .map { response in
             let data = try! self.decoder.decode(Response.self, from: response.data)
-            return data.categories.items.map { category in
-              return GenreItem(name: category.name)
+            return data.genres.map { genre in
+              return GenreItem(name: genre)
             }
         }
       }
@@ -88,8 +80,6 @@ class ApiClient {
       .then { accessToken -> Promise<[ArtistItem]> in
         let genreUrl = "\"\(genre)\"".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         let url = "https://api.spotify.com/v1/search?q=genre:\(genreUrl)&type=artist&limit=\(self.pageSize)&offset=\(self.pageSize * page)"
-        
-        print(url)
        
         var headers = HTTPHeaders()
         headers["Authorization"] = "Bearer \(accessToken)"

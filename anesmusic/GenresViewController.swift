@@ -10,18 +10,13 @@ import UIKit
 
 class GenresViewController: UITableViewController {
   let apiClient: ApiClient
-  let viewModel: InfinityScrollViewModel<GenreItem>
+  var isFetching = false
+  var genres: [GenreItem] = []
   
   init(apiClient: ApiClient) {
     self.apiClient = apiClient
-    viewModel = InfinityScrollViewModel { page in
-      return apiClient.getTopGenres(page: page)
-    }
     
     super.init(nibName: nil, bundle: nil)
-    
-    viewModel.delegate = self
-    tableView.prefetchDataSource = self
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -35,20 +30,38 @@ class GenresViewController: UITableViewController {
     
     refreshControl = UIRefreshControl()
     tableView.refreshControl = refreshControl
-    refreshControl!.addTarget(viewModel, action: #selector(viewModel.reload), for: .valueChanged)
+    refreshControl!.addTarget(self, action: #selector(reloadGenres), for: .valueChanged)
     
-    viewModel.reload()
+    reloadGenres()
+  }
+  
+  @objc func reloadGenres() {
+    guard !isFetching else { return }
+    
+    isFetching = true
+    refreshControl!.beginRefreshing()
+    
+    apiClient.getTopGenres()
+      .done { genres in
+        self.genres = genres
+        self.tableView.reloadData()
+      }
+      .catch { _ in }
+      .finally {
+        self.isFetching = false
+        self.refreshControl!.endRefreshing()
+      }
   }
   
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    let genre = viewModel.items[indexPath.row]
+    let genre = genres[indexPath.row]
     let artistsViewController = ArtistsViewController(apiClient: apiClient, genre: genre)
     navigationController!.pushViewController(artistsViewController, animated: true)
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-    let genre = viewModel.items[indexPath.row]
+    let genre = genres[indexPath.row]
     cell.textLabel!.text = genre.name
     return cell
   }
@@ -58,16 +71,7 @@ class GenresViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return viewModel.items.count
-  }
-}
-
-extension GenresViewController: UITableViewDataSourcePrefetching {
-  func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-    // if table view wants to prefetch last row, fetch next page
-    if (indexPaths.contains { $0.row == viewModel.items.count - 1 }) {
-      viewModel.loadMore()
-    }
+    return genres.count
   }
 }
 
