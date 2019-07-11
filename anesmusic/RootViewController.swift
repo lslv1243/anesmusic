@@ -11,7 +11,10 @@ import Alamofire
 
 class RootViewController: UINavigationController {
   // TODO: save api key somewhere else
-  let apiClient = ApiClient(apiKey: "93e9a520b0bd3e64a3a0d1be9c2cd5ea")
+  let apiClient = ApiClient(
+    clientId: "85fc99fb6f544351bcddd595d70b6e0a",
+    clientSecret: "a4f58e5e442f4880b02ad6f24f82e0be"
+  )
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
