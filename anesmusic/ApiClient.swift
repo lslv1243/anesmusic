@@ -172,41 +172,41 @@ class ApiClient {
   }
   
   func getInfo(artistId: String) -> Promise<ArtistInfo> {
-    return Promise.value(ArtistInfo(id: "", name: "", imageUrl: "", genres: []))
-//    struct Response: Decodable {
-//      let artist: Artist
-//
-//      struct Artist: Decodable {
-//        let name: String
-//        let mbid: String
-//        let image: [Image]
-//        let tags: Tags
-//      }
-//
-//      typealias Image = Dictionary<String, String>
-//
-//      struct Tags: Decodable {
-//        let tag: [Tag]
-//      }
-//
-//      struct Tag: Decodable {
-//        let name: String
-//      }
-//    }
-//
-//    let url = "https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=\(artistId)&api_key=\(apiKey)&format=json"
-//
-//    return Alamofire.request(url)
-//      .responseData()
-//      .map { response in
-//        let data = try! self.decoder.decode(Response.self, from: response.data)
-//        return ArtistInfo(
-//          id: data.artist.mbid,
-//          name: data.artist.name,
-//          imageUrl: data.artist.image[3]["#text"]!,
-//          genres: data.artist.tags.tag.map { GenreItem(name: $0.name) }
-//        )
-//    }
+    return authenticator.getAccessToken()
+      .then { accessToken -> Promise<ArtistInfo> in
+        let url = "https://api.spotify.com/v1/artists/\(artistId)"
+        
+        var headers = HTTPHeaders()
+        headers["Authorization"] = "Bearer \(accessToken)"
+        
+        struct Response: Decodable {
+          let id: String
+          let genres: [String]
+          let images: [Image]
+          let name: String
+          
+          struct Image: Decodable {
+            let url: String
+          }
+        }
+        
+        return Alamofire
+          .request(
+            url,
+            method: .get,
+            headers: headers
+          )
+          .responseData()
+          .map { response in
+            let data = try! self.decoder.decode(Response.self, from: response.data)
+            return ArtistInfo(
+              id: data.id,
+              name: data.name,
+              imageUrl: data.images.first!.url,
+              genres: data.genres.map { GenreItem(name: $0) }
+            )
+          }
+      }
   }
 }
 

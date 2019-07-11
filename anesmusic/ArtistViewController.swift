@@ -186,7 +186,8 @@ class ArtistInfoTableViewCell: UITableViewCell {
   func updateInfo(imageUrl: String, artistName: String) {
     artistImageView.sd_setImage(
       with: URL(string: imageUrl),
-      placeholderImage: UIImage(named: "placeholder")
+      // maybe the lower resolution image has already being loaded
+      placeholderImage: artistImageView.image ?? UIImage(named: "placeholder")
     )
     artistNameLabel.text = artistName
   }
@@ -223,25 +224,25 @@ class ArtistViewModel {
   @objc func reload() {
     guard !isFetching else { return }
     
-    // isFetchingInfo = true
+    isFetchingInfo = true
     delegate?.artistViewModelWillReload()
     infinityScroll.reload()
-//    apiClient.getInfo(artistId: artistItem.id)
-//      .done { artist in
-//        self.artist = artist
-//        if (!self.isFetchingAlbums) {
-//          self.delegate?.artistViewModelDidReload(error: nil)
-//        }
-//      }
-//      .catch { error in
-//        if (!self.isFetchingAlbums) {
-//          // FIXME: getting only last error
-//          self.delegate?.artistViewModelDidReload(error: error)
-//        }
-//      }
-//      .finally {
-//          self.isFetchingInfo = false
-//      }
+    apiClient.getInfo(artistId: artistItem.id)
+      .done { artist in
+        self.artist = artist
+        if (!self.isFetchingAlbums) {
+          self.delegate?.artistViewModelDidReload(error: nil)
+        }
+      }
+      .catch { error in
+        if (!self.isFetchingAlbums) {
+          // FIXME: getting only last error
+          self.delegate?.artistViewModelDidReload(error: error)
+        }
+      }
+      .finally {
+          self.isFetchingInfo = false
+      }
   }
   
   func loadMoreAlbums() {
