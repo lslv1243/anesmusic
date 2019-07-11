@@ -39,6 +39,9 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
     tableView.refreshControl = refreshControl
     refreshControl!.addTarget(viewModel, action: #selector(viewModel.reload), for: .valueChanged)
     
+    tableView.separatorInset.left = 10
+    tableView.separatorInset.right = 10
+    
     tableView.prefetchDataSource = self
     
     viewModel.reload()
@@ -55,13 +58,11 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
+    let reuseIdentifier = "ARTIST_CELL"
+    let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? ArtistTableViewCell
+      ?? ArtistTableViewCell(reuseIdentifier: reuseIdentifier)
     let artist = viewModel.items[indexPath.row]
-    cell.textLabel!.text = artist.name
-    cell.imageView!.sd_setImage(
-      with: URL(string: artist.imageUrl),
-      placeholderImage: UIImage(named: "placeholder")
-    )
+    cell.updateInfo(artist: artist)
     return cell
   }
   
@@ -99,5 +100,54 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
     if (error == nil) {
       tableView.reloadData()
     }
+  }
+}
+
+class ArtistTableViewCell: UITableViewCell {
+  let artistImageView = UIImageView(frame: .zero)
+  let artistNameLabel = UILabel()
+  
+  init(reuseIdentifier: String?) {
+    super.init(style: .default, reuseIdentifier: reuseIdentifier)
+    
+    addSubview(artistImageView)
+    addSubview(artistNameLabel)
+    
+    artistImageView.contentMode = .scaleAspectFill
+    artistImageView.clipsToBounds = true
+    artistImageView.translatesAutoresizingMaskIntoConstraints = false
+    
+    artistNameLabel.font = artistNameLabel.font.withSize(30)
+    artistNameLabel.adjustsFontSizeToFitWidth = true
+    artistNameLabel.translatesAutoresizingMaskIntoConstraints = false
+    
+    NSLayoutConstraint.activate([
+      self.heightAnchor.constraint(equalToConstant: 80)
+    ])
+    
+    NSLayoutConstraint.activate([
+      artistImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+      artistImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 5),
+      artistImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5),
+      artistImageView.widthAnchor.constraint(equalTo: artistImageView.heightAnchor)
+    ])
+    
+    NSLayoutConstraint.activate([
+      artistNameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 5),
+      artistNameLabel.leadingAnchor.constraint(equalTo: artistImageView.trailingAnchor, constant: 10),
+      artistNameLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10)
+    ])
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  func updateInfo(artist: ArtistItem) {
+    artistNameLabel.text = artist.name
+    artistImageView.sd_setImage(
+      with: URL(string: artist.imageUrl ?? ""),
+      placeholderImage: UIImage(named: "placeholder")
+    )
   }
 }

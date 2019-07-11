@@ -8,6 +8,7 @@
 
 import UIKit
 import SDWebImage
+import PromiseKit
 
 class ArtistViewController: UITableViewController {
   let apiClient: ApiClient
@@ -57,7 +58,7 @@ class ArtistViewController: UITableViewController {
       let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as? ArtistInfoTableViewCell
         ?? ArtistInfoTableViewCell(reuseIdentifier: cellIdentifier)
       cell.updateInfo(
-        imageUrl: viewModel.artist?.imageUrl ?? artist.imageUrl,
+        imageUrl: viewModel.artist?.imageUrl ?? artist.imageUrl ?? "",
         artistName: viewModel.artist?.name ?? artist.name
       )
       return cell
@@ -213,7 +214,8 @@ class ArtistViewModel {
     self.apiClient = apiClient
     self.artistItem = artistItem
     infinityScroll = InfinityScrollViewModel { page in
-      apiClient.getTopAlbums(artistId: artistItem.id, page: page)
+      Promise.value([])
+      // apiClient.getTopAlbums(artistId: artistItem.id, page: page)
     }
     infinityScroll.delegate = self
   }
@@ -221,25 +223,25 @@ class ArtistViewModel {
   @objc func reload() {
     guard !isFetching else { return }
     
-    isFetchingInfo = true
+    // isFetchingInfo = true
     delegate?.artistViewModelWillReload()
     infinityScroll.reload()
-    apiClient.getInfo(artistId: artistItem.id)
-      .done { artist in
-        self.artist = artist
-        if (!self.isFetchingAlbums) {
-          self.delegate?.artistViewModelDidReload(error: nil)
-        }
-      }
-      .catch { error in
-        if (!self.isFetchingAlbums) {
-          // FIXME: getting only last error
-          self.delegate?.artistViewModelDidReload(error: error)
-        }
-      }
-      .finally {
-          self.isFetchingInfo = false
-      }
+//    apiClient.getInfo(artistId: artistItem.id)
+//      .done { artist in
+//        self.artist = artist
+//        if (!self.isFetchingAlbums) {
+//          self.delegate?.artistViewModelDidReload(error: nil)
+//        }
+//      }
+//      .catch { error in
+//        if (!self.isFetchingAlbums) {
+//          // FIXME: getting only last error
+//          self.delegate?.artistViewModelDidReload(error: error)
+//        }
+//      }
+//      .finally {
+//          self.isFetchingInfo = false
+//      }
   }
   
   func loadMoreAlbums() {
