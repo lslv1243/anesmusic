@@ -16,6 +16,7 @@ struct GenreItem {
 }
 
 struct ArtistItem {
+  let id: String
   let name: String
   let imageUrl: String?
 }
@@ -28,6 +29,7 @@ struct ArtistInfo {
 }
 
 struct AlbumItem {
+  let id: String
   let name: String
   let coverUrl: String
 }
@@ -98,6 +100,7 @@ class ApiClient {
           }
           
           struct Item: Decodable {
+            let id: String
             let name: String
             let images: [Image]
           }
@@ -118,6 +121,7 @@ class ApiClient {
             let data = try! self.decoder.decode(Response.self, from: response.data)
             return data.artists.items.map { item in
               return ArtistItem(
+                id: item.id,
                 name: item.name,
                 imageUrl: item.images.last?.url
               )
@@ -127,33 +131,44 @@ class ApiClient {
   }
   
   func getTopAlbums(artistId: String, page: Int) -> Promise<[AlbumItem]> {
-    return Promise.value([])
-//    struct Response: Decodable {
-//      let topalbums: TopAlbums
-//
-//      struct TopAlbums: Decodable {
-//        let album: [Album]
-//      }
-//
-//      struct Album: Decodable {
-//        let name: String
-//        let image: [Image]
-//      }
-//
-//      typealias Image = Dictionary<String, String>
-//    }
-//
-//    let url = "https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=\(artistId)&api_key=\(apiKey)&format=json&limit=\(pageSize)&page=\(page)"
-//
-//    return Alamofire.request(url)
-//      .responseData()
-//      .map { response in
-//        let data = try! self.decoder.decode(Response.self, from: response.data)
-//        return data.topalbums.album.map { AlbumItem(
-//          name: $0.name,
-//          coverUrl: $0.image[1]["#text"]!
-//        ) }
-//      }
+    return authenticator.getAccessToken()
+      .then { accessToken -> Promise<[AlbumItem]> in
+        let url = "https://api.spotify.com/v1/artists/\(artistId)/albums?limit=\(self.pageSize)&offset=\(self.pageSize * page)"
+        
+        var headers = HTTPHeaders()
+        headers["Authorization"] = "Bearer \(accessToken)"
+        
+        struct Response: Decodable {
+          let items: [Item]
+          
+          struct Item: Decodable {
+            let id: String
+            let images: [Image]
+            let name: String
+          }
+          
+          struct Image: Decodable {
+            let url: String
+          }
+        }
+        
+        return Alamofire
+          .request(
+            url,
+            method: .get,
+            headers: headers)
+          .responseData()
+          .map { response in
+            let data = try! self.decoder.decode(Response.self, from: response.data)
+            return data.items.map { item in
+              return AlbumItem(
+                id: item.id,
+                name: item.name,
+                coverUrl: item.images.last!.url
+              )
+            }
+          }
+      }
   }
   
   func getInfo(artistId: String) -> Promise<ArtistInfo> {

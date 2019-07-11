@@ -151,6 +151,7 @@ class ArtistInfoTableViewCell: UITableViewCell {
     addSubview(artistImageView)
     addSubview(artistNameLabel)
     
+    artistImageView.alpha = 0.5
     artistImageView.contentMode = .scaleAspectFill
     artistImageView.clipsToBounds = true
     artistNameLabel.font = artistNameLabel.font.withSize(50)
@@ -214,8 +215,7 @@ class ArtistViewModel {
     self.apiClient = apiClient
     self.artistItem = artistItem
     infinityScroll = InfinityScrollViewModel { page in
-      Promise.value([])
-      // apiClient.getTopAlbums(artistId: artistItem.id, page: page)
+      apiClient.getTopAlbums(artistId: artistItem.id, page: page)
     }
     infinityScroll.delegate = self
   }
