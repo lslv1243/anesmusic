@@ -32,7 +32,7 @@ class ArtistViewController: UITableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    navigationItem.title = "Sobre"
+    navigationItem.title = artist.name
     
     refreshControl = UIRefreshControl()
     tableView.refreshControl = refreshControl
@@ -96,10 +96,16 @@ class ArtistViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    if (ArtistViewControllerSection(rawValue: indexPath.section)! == .genres) {
+    switch (ArtistViewControllerSection(rawValue: indexPath.section)!) {
+    case .info: break
+    case .genres:
       let genre = viewModel.artist!.genres[indexPath.row]
       let genreViewController = ArtistsViewController(apiClient: apiClient, genre: genre)
-      navigationController?.pushViewController(genreViewController, animated: true)
+      navigationController!.pushViewController(genreViewController, animated: true)
+    case .albums:
+      let album = viewModel.albums[indexPath.row]
+      let albumViewController = AlbumViewController(apiClient: apiClient, album: album)
+      navigationController!.pushViewController(albumViewController, animated: true)
     }
   }
 }
@@ -227,7 +233,7 @@ class ArtistViewModel {
     isFetchingInfo = true
     delegate?.artistViewModelWillReload()
     infinityScroll.reload()
-    apiClient.getInfo(artistId: artistItem.id)
+    apiClient.getArtistInfo(artistId: artistItem.id)
       .done { artist in
         self.artist = artist
         if (!self.isFetchingAlbums) {

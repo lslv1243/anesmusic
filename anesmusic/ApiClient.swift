@@ -32,6 +32,15 @@ struct AlbumItem {
   let id: String
   let name: String
   let coverUrl: String
+  let releaseYear: String
+}
+
+struct AlbumInfo {
+  let id: String
+  let name: String
+  let coverUrl: String
+  let releaseYear: String
+  let genres: [GenreItem]
 }
 
 class ApiClient {
@@ -137,6 +146,7 @@ class ApiClient {
             let id: String
             let images: [Image]
             let name: String
+            let release_date: String
           }
           
           struct Image: Decodable {
@@ -156,14 +166,15 @@ class ApiClient {
               return AlbumItem(
                 id: item.id,
                 name: item.name,
-                coverUrl: item.images.last!.url
+                coverUrl: item.images.last!.url,
+                releaseYear: String(item.release_date.split(separator: "-").first!)
               )
             }
           }
       }
   }
   
-  func getInfo(artistId: String) -> Promise<ArtistInfo> {
+  func getArtistInfo(artistId: String) -> Promise<ArtistInfo> {
     return authenticator.getAccessToken()
       .then { accessToken -> Promise<ArtistInfo> in
         let url = "https://api.spotify.com/v1/artists/\(artistId)"
@@ -195,6 +206,47 @@ class ApiClient {
               id: data.id,
               name: data.name,
               imageUrl: data.images.first!.url,
+              genres: data.genres.map { GenreItem(name: $0) }
+            )
+          }
+      }
+  }
+  
+  func getAlbumInfo(albumId: String) -> Promise<AlbumInfo> {
+    return authenticator.getAccessToken()
+      .then { accessToken -> Promise<AlbumInfo> in
+        let url = "https://api.spotify.com/v1/albums/\(albumId)"
+        
+        var headers = HTTPHeaders()
+        headers["Authorization"] = "Bearer \(accessToken)"
+        
+        struct Response: Decodable {
+          let id: String
+          let name: String
+          let genres: [String]
+          let images: [Image]
+          let release_date: String
+          
+          struct Image: Decodable {
+            let url: String
+          }
+        }
+        
+        return Alamofire
+          .request(
+            url,
+            method: .get,
+            headers: headers
+          )
+          .responseData()
+          .map { response in
+            let data = try! self.decoder.decode(Response.self, from: response.data)
+            
+            return AlbumInfo(
+              id: data.id,
+              name: data.name,
+              coverUrl: data.images.first!.url,
+              releaseYear: String(data.release_date.split(separator: "-").first!),
               genres: data.genres.map { GenreItem(name: $0) }
             )
           }
