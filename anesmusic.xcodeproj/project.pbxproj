@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		72112AB022DA0CBC00980691 /* HiddenNavbarTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72112AAF22DA0CBC00980691 /* HiddenNavbarTableViewController.swift */; };
 		7226E16122D3C12700370D23 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7226E16022D3C12700370D23 /* AppDelegate.swift */; };
 		7226E16322D3C12700370D23 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7226E16222D3C12700370D23 /* RootViewController.swift */; };
 		7226E16822D3C12900370D23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7226E16722D3C12900370D23 /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		72112AAF22DA0CBC00980691 /* HiddenNavbarTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenNavbarTableViewController.swift; sourceTree = "<group>"; };
 		7226E15D22D3C12700370D23 /* anesmusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = anesmusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7226E16022D3C12700370D23 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7226E16222D3C12700370D23 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				72C0A1AD22D4F24100E823FE /* ArtistsViewController.swift */,
 				729D89A922D520A2001D7956 /* InfinityScrollViewModel.swift */,
 				729D89AB22D52322001D7956 /* ArtistViewController.swift */,
+				72112AAF22DA0CBC00980691 /* HiddenNavbarTableViewController.swift */,
 				729D89AF22D8C6BB001D7956 /* AlbumViewController.swift */,
 			);
 			path = anesmusic;
@@ -256,6 +259,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72112AB022DA0CBC00980691 /* HiddenNavbarTableViewController.swift in Sources */,
 				729D89AC22D52322001D7956 /* ArtistViewController.swift in Sources */,
 				72C0A1AA22D4D6D700E823FE /* GenresViewController.swift in Sources */,
 				729D89AA22D520A2001D7956 /* InfinityScrollViewModel.swift in Sources */,

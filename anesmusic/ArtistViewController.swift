@@ -10,10 +10,15 @@ import UIKit
 import SDWebImage
 import PromiseKit
 
-class ArtistViewController: UITableViewController {
+class ArtistViewController: HiddenNavbarTableViewController {
   let apiClient: ApiClient
   let artist: ArtistItem
   let viewModel: ArtistViewModel
+  
+  override var headerHeight: CGFloat {
+    get { return view.bounds.width }
+    set {}
+  }
   
   init(apiClient: ApiClient, artist: ArtistItem) {
     self.apiClient = apiClient
@@ -148,6 +153,7 @@ enum ArtistViewControllerSection: Int, CaseIterable {
 }
 
 class ArtistInfoTableViewCell: UITableViewCell {
+  private let artistImageGradient = CAGradientLayer()
   private let artistImageView = UIImageView(frame: .zero)
   private let artistNameLabel = UILabel()
   
@@ -157,32 +163,47 @@ class ArtistInfoTableViewCell: UITableViewCell {
     addSubview(artistImageView)
     addSubview(artistNameLabel)
     
-    artistImageView.alpha = 0.5
+    artistImageGradient.colors = [
+      UIColor.black.withAlphaComponent(0.5).cgColor,
+      UIColor.black.withAlphaComponent(0.2).cgColor,
+      UIColor.black.withAlphaComponent(0.1).cgColor,
+      UIColor.black.withAlphaComponent(0.5).cgColor,
+      UIColor.black.withAlphaComponent(0.8).cgColor
+    ]
+    artistImageView.layer.insertSublayer(artistImageGradient, at: 0)
+    
     artistImageView.contentMode = .scaleAspectFill
     artistImageView.clipsToBounds = true
     artistNameLabel.font = artistNameLabel.font.withSize(50)
+    artistNameLabel.font = UIFont(
+      descriptor: artistNameLabel.font.fontDescriptor.withSymbolicTraits([.traitBold])!,
+      size: 0
+    )
     artistNameLabel.adjustsFontSizeToFitWidth = true
     artistNameLabel.textAlignment = .center
+    artistNameLabel.textColor = .white
     
     artistImageView.translatesAutoresizingMaskIntoConstraints = false
     artistNameLabel.translatesAutoresizingMaskIntoConstraints = false
     
     NSLayoutConstraint.activate([
-      self.heightAnchor.constraint(equalToConstant: 200),
-    ])
-    
-    NSLayoutConstraint.activate([
-      artistImageView.topAnchor.constraint(equalTo: self.topAnchor),
       artistImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
       artistImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+      artistImageView.heightAnchor.constraint(equalTo: artistImageView.widthAnchor),
+      artistImageView.topAnchor.constraint(equalTo: self.topAnchor),
       artistImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
     ])
     
     NSLayoutConstraint.activate([
       artistNameLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-      artistNameLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
+      artistNameLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -40),
       artistNameLabel.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -40)
     ])
+  }
+  
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    artistImageGradient.frame = self.bounds
   }
   
   required init?(coder aDecoder: NSCoder) {

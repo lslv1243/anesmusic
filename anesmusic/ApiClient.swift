@@ -166,7 +166,7 @@ class ApiClient {
               return AlbumItem(
                 id: item.id,
                 name: item.name,
-                coverUrl: item.images.last!.url,
+                coverUrl: item.images.last?.url ?? "",
                 releaseYear: String(item.release_date.split(separator: "-").first!)
               )
             }
