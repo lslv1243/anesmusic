@@ -19,6 +19,9 @@ class RootViewController: UINavigationController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
+    navigationBar.barStyle = .black
+    navigationBar.tintColor = .white
+    
     pushViewController(GenresViewController(apiClient: apiClient), animated: false)
   }
 }

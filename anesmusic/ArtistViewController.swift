@@ -37,9 +37,13 @@ class ArtistViewController: HiddenNavbarTableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    view.backgroundColor = UIColor(displayP3Red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)
+    tableView.separatorColor = .clear
+    
     navigationItem.title = artist.name
     
     refreshControl = UIRefreshControl()
+    refreshControl!.tintColor = .white
     tableView.refreshControl = refreshControl
     refreshControl!.addTarget(viewModel, action: #selector(viewModel.reload), for: .valueChanged)
     
@@ -48,11 +52,18 @@ class ArtistViewController: HiddenNavbarTableViewController {
     viewModel.reload()
   }
   
-  override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+  override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    if ArtistViewControllerSection(rawValue: section)! == .info {
+      return 0
+    }
+    return UITableView.automaticDimension
+  }
+  
+  override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     switch (ArtistViewControllerSection(rawValue: section)!) {
     case .info: return nil
-    case .genres: return "Gêneros do artista"
-    case .albums: return "Top Álbuns"
+    case .genres: return SectionHeader(title: "Gêneros do artista")
+    case .albums: return SectionHeader(title: "Top Álbuns")
     }
   }
   
@@ -73,6 +84,8 @@ class ArtistViewController: HiddenNavbarTableViewController {
         ?? UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
       let genre = viewModel.artist!.genres[indexPath.row]
       cell.textLabel!.text = genre.name
+      cell.textLabel!.textColor = .white
+      cell.backgroundColor = .clear
       return cell
     case .albums:
       let cellIdentifier = "ALBUM_CELL"
@@ -84,6 +97,8 @@ class ArtistViewController: HiddenNavbarTableViewController {
         with: URL(string: album.coverUrl),
         placeholderImage: UIImage(named: "placeholder")
       )
+      cell.textLabel!.textColor = .white
+      cell.backgroundColor = .clear
       return cell
     }
   }
@@ -164,11 +179,11 @@ class ArtistInfoTableViewCell: UITableViewCell {
     addSubview(artistNameLabel)
     
     artistImageGradient.colors = [
-      UIColor.black.withAlphaComponent(0.5).cgColor,
+      UIColor(displayP3Red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0).cgColor,
       UIColor.black.withAlphaComponent(0.2).cgColor,
       UIColor.black.withAlphaComponent(0.1).cgColor,
       UIColor.black.withAlphaComponent(0.5).cgColor,
-      UIColor.black.withAlphaComponent(0.8).cgColor
+      UIColor(displayP3Red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0).cgColor
     ]
     artistImageView.layer.insertSublayer(artistImageGradient, at: 0)
     
@@ -304,4 +319,50 @@ protocol ArtistViewModelDelegate: class {
   func artistViewModelDidReload(error: Error?)
   func artistViewModelWillLoadMoreAlbums()
   func artistViewModelDidLoadMoreAlbums(error: Error?)
+}
+
+class SectionHeader: UIView {
+  private let containerView = UIView()
+  private let titleLabel = UILabel()
+  
+  convenience init(title: String) {
+    self.init(frame: .zero)
+    
+    titleLabel.text = title
+  }
+  
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    
+    addSubview(containerView)
+    addSubview(titleLabel)
+    
+    containerView.backgroundColor = UIColor(displayP3Red: 0.1, green: 0.35, blue: 0.5, alpha: 1.0)
+    containerView.layer.cornerRadius = 10
+    
+    titleLabel.textColor = .white
+    titleLabel.font = titleLabel.font.withSize(20)
+    
+    containerView.translatesAutoresizingMaskIntoConstraints = false
+    titleLabel.translatesAutoresizingMaskIntoConstraints = false
+    
+    NSLayoutConstraint.activate([
+      containerView.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
+      containerView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
+      containerView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+      containerView.leftAnchor.constraint(greaterThanOrEqualTo: self.leftAnchor, constant: 20),
+      containerView.rightAnchor.constraint(lessThanOrEqualTo: self.rightAnchor, constant: -20)
+    ])
+    
+    NSLayoutConstraint.activate([
+      titleLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10),
+      titleLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
+      titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
+      titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
+    ])
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
 }
