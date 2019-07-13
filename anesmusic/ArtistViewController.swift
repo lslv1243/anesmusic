@@ -324,7 +324,6 @@ protocol ArtistViewModelDelegate: class {
 }
 
 class SectionHeader: UIView {
-  private let containerView = UIView()
   private let titleLabel = UILabel()
   
   convenience init(title: String) {
@@ -336,31 +335,21 @@ class SectionHeader: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
     
-    addSubview(containerView)
-    addSubview(titleLabel)
+    backgroundColor = UIColor(displayP3Red: 0.1, green: 0.1, blue: 0.1, alpha: 0.95)
     
-    containerView.backgroundColor = UIColor(displayP3Red: 0.1, green: 0.35, blue: 0.5, alpha: 1.0)
-    containerView.layer.cornerRadius = 10
+    addSubview(titleLabel)
     
     titleLabel.textColor = .white
     titleLabel.font = titleLabel.font.withSize(20)
+    titleLabel.textAlignment = .center
     
-    containerView.translatesAutoresizingMaskIntoConstraints = false
     titleLabel.translatesAutoresizingMaskIntoConstraints = false
     
     NSLayoutConstraint.activate([
-      containerView.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
-      containerView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
-      containerView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-      containerView.leftAnchor.constraint(greaterThanOrEqualTo: self.leftAnchor, constant: 20),
-      containerView.rightAnchor.constraint(lessThanOrEqualTo: self.rightAnchor, constant: -20)
-    ])
-    
-    NSLayoutConstraint.activate([
-      titleLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10),
-      titleLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -10),
-      titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
-      titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
+      titleLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 10),
+      titleLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10),
+      titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
+      titleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10)
     ])
   }
   
