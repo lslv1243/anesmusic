@@ -66,11 +66,16 @@ class HiddenNavbarTableViewController: UITableViewController {
     }
   }
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    updateNavigationBarVisibility()
+  }
+  
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
     viewIsVisible = true
-    updateNavigationBarVisibility()
   }
   
   override func viewWillDisappear(_ animated: Bool) {

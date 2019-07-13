@@ -50,6 +50,8 @@ class ArtistViewController: HiddenNavbarTableViewController {
     tableView.prefetchDataSource = self
     
     viewModel.reload()
+    
+    refreshControl!.endRefreshing()
   }
   
   override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
