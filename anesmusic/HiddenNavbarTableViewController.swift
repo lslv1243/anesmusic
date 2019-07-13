@@ -66,15 +66,11 @@ class HiddenNavbarTableViewController: UITableViewController {
     }
   }
   
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-  }
-  
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
     viewIsVisible = true
-    hideNavigationBar()
+    updateNavigationBarVisibility()
   }
   
   override func viewWillDisappear(_ animated: Bool) {
@@ -87,10 +83,14 @@ class HiddenNavbarTableViewController: UITableViewController {
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
     guard viewIsVisible else { return }
     
+    updateNavigationBarVisibility()
+  }
+  
+  private func updateNavigationBarVisibility() {
     let navigationBarHeight = navigationController!.navigationBar.frame.height
     let statusBarHeight = UIApplication.shared.statusBarFrame.height
     
-    if scrollView.contentOffset.y > (headerHeight - navigationBarHeight - statusBarHeight) {
+    if tableView.contentOffset.y > (headerHeight - navigationBarHeight - statusBarHeight) {
       showNavigationBar()
     } else {
       hideNavigationBar()
