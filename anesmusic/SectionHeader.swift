@@ -8,19 +8,24 @@
 
 import UIKit
 
+enum SectionHeaderStyle {
+  case `default`, light
+}
+
 class SectionHeader: UIView {
   private let titleLabel = UILabel()
   
-  convenience init(title: String) {
+  convenience init(title: String, style: SectionHeaderStyle = .default) {
     self.init(frame: .zero)
     
     titleLabel.text = title
+    backgroundColor = (style == .default
+      ? AnesColor.background
+      : AnesColor.lightBackground).withAlphaComponent(0.95)
   }
   
   override init(frame: CGRect) {
     super.init(frame: frame)
-    
-    backgroundColor = AnesColor.background.withAlphaComponent(0.95)
     
     addSubview(titleLabel)
     
