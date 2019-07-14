@@ -28,6 +28,9 @@ class InfinityScrollViewModel<T> {
     delegate?.infinityScrollViewModelWillReload()
     currentPage = 0
     fetchPage(0)
+      .ensure {
+        self.isFetching = false
+      }
       .done { items in
         self.items = items
         self.delegate?.infinityScrollViewModelDidReload(error: nil)
@@ -35,9 +38,6 @@ class InfinityScrollViewModel<T> {
       .catch { error in
         self.delegate?.infinityScrollViewModelDidReload(error: error)
       }
-      .finally {
-        self.isFetching = false
-    }
   }
   
   func loadMore() {

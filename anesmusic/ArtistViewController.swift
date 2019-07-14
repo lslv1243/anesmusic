@@ -274,6 +274,9 @@ class ArtistViewModel {
     delegate?.artistViewModelWillReload()
     infinityScroll.reload()
     apiClient.getArtistInfo(artistId: artistItem.id)
+      .ensure {
+        self.isFetchingInfo = false
+      }
       .done { artist in
         self.artist = artist
         if (!self.isFetchingAlbums) {
@@ -285,9 +288,6 @@ class ArtistViewModel {
           // FIXME: getting only last error
           self.delegate?.artistViewModelDidReload(error: error)
         }
-      }
-      .finally {
-          self.isFetchingInfo = false
       }
   }
   
