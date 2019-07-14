@@ -96,6 +96,8 @@ class ArtistViewController: HiddenNavbarTableViewController {
         ?? UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
       let album = viewModel.albums[indexPath.row]
       cell.textLabel!.text = album.name
+      cell.imageView!.clipsToBounds = true
+      cell.imageView!.contentMode = .scaleAspectFill
       cell.imageView!.sd_setImage(
         with: album.coverUrl.lowQuality.flatMap { URL(string: $0) },
         placeholderImage: UIImage(named: "placeholder")
