@@ -50,12 +50,20 @@ class HomeViewController: UITableViewController {
       cell.updateInfo(genres: viewModel.genres)
       cell.delegate = self
       return cell
+    case .artists:
+      let reuseIdentifier = "ARTISTS_CELL"
+      let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? ArtistsTableViewCell
+        ?? ArtistsTableViewCell(reuseIdentifier: reuseIdentifier)
+      cell.updateInfo(artists: viewModel.artists)
+      cell.delegate = self
+      return cell
     }
   }
   
   override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     switch (HomeViewControllerSection(rawValue: section)!) {
     case .genres: return SectionHeader(title: "Gêneros")
+    case .artists: return SectionHeader(title: "Artistas")
     }
   }
   
@@ -69,7 +77,7 @@ class HomeViewController: UITableViewController {
 }
 
 enum HomeViewControllerSection: Int, CaseIterable {
-  case genres = 0
+  case genres = 0, artists = 1
 }
 
 extension HomeViewController: HomeViewModelDelegate {
@@ -83,6 +91,13 @@ extension HomeViewController: HomeViewModelDelegate {
     }
     refreshControl!.endRefreshing()
   }
+  
+  func homeViewModelWillLoadMoreArtists() {
+  }
+  
+  func homeViewModelDidLoadMoreArtists(error: Error?) {
+    tableView.reloadData()
+  }
 }
 
 extension HomeViewController: GenresTableViewCellDelegate {
@@ -93,35 +108,93 @@ extension HomeViewController: GenresTableViewCellDelegate {
   }
 }
 
+extension HomeViewController: ArtistsTableViewCellDelegate {
+  func artistsTableViewCell(_ tableViewCell: ArtistsTableViewCell, didSelectItemAtIndexPath indexPath: IndexPath) {
+    let artist = viewModel.artists[indexPath.row]
+    let artistViewController = ArtistViewController(apiClient: apiClient, artist: artist)
+    navigationController!.pushViewController(artistViewController, animated: true)
+  }
+  
+  func didReachTheEndAtArtistsTableViewCell(_ tableViewCell: ArtistsTableViewCell) {
+    viewModel.loadMoreArtists()
+  }
+}
+
 class HomeViewModel {
+  private let infinityArtists: InfinityScrollViewModel<ArtistItem>
   let apiClient: ApiClient
   private(set) var genres: [GenreItem] = []
-  // private(set) var artists: [ArtistItem] = []
-  private(set) var isFetching = false
+  var artists: [ArtistItem] {
+    get { return infinityArtists.items }
+  }
+  private var isFetchingGenres = false
+  var isFetching: Bool {
+    return isFetchingGenres || infinityArtists.isFetching
+  }
   weak var delegate: HomeViewModelDelegate?
   
   init(apiClient: ApiClient) {
+    infinityArtists = InfinityScrollViewModel { page in
+      apiClient.getTopArtists(page: page)
+    }
+    
     self.apiClient = apiClient
+    
+    infinityArtists.delegate = self
   }
   
   @objc func reload() {
-    isFetching = true
+    guard !isFetching else { return }
+    
+    isFetchingGenres = true
     delegate?.homeViewModelWillReload()
+    infinityArtists.reload()
     apiClient.getTopGenres()
-      .ensure { self.isFetching = false }
+      .ensure { self.isFetchingGenres = false }
       .done { genres in
         self.genres = genres
-        self.delegate?.homeViewModelDidReload(error: nil)
+        if !self.infinityArtists.isFetching {
+          self.delegate?.homeViewModelDidReload(error: nil)
+        }
       }
       .catch { error in
-        self.delegate?.homeViewModelDidReload(error: error)
+        if !self.infinityArtists.isFetching {
+          // FIXME: getting only last error
+          self.delegate?.homeViewModelDidReload(error: error)
+        }
       }
+  }
+  
+  func loadMoreArtists() {
+    infinityArtists.loadMore()
+  }
+}
+
+extension HomeViewModel: InfinityScrollViewModelDelegate {
+  func infinityScrollViewModelWillReload() {
+  }
+  
+  func infinityScrollViewModelDidReload(error: Error?) {
+    if !isFetchingGenres {
+      // FIXME: getting only last error
+      delegate?.homeViewModelDidReload(error: error)
+    }
+  }
+  
+  func infinityScrollViewModelWillLoadMore() {
+    delegate?.homeViewModelWillLoadMoreArtists()
+  }
+  
+  func infinityScrollViewModelDidLoadMore(error: Error?) {
+    delegate?.homeViewModelDidLoadMoreArtists(error: error)
   }
 }
 
 protocol HomeViewModelDelegate: class {
   func homeViewModelWillReload()
   func homeViewModelDidReload(error: Error?)
+  func homeViewModelWillLoadMoreArtists()
+  func homeViewModelDidLoadMoreArtists(error: Error?)
 }
 
 class GenresTableViewCell: UITableViewCell {
@@ -230,5 +303,140 @@ class GenreCollectionViewCell: UICollectionViewCell {
   
   func updateInfo(genreName: String) {
     genreNameLabel.text = genreName
+  }
+}
+
+class ArtistsTableViewCell: UITableViewCell {
+  private let artistReuseIdentifier = "ARTIST_ITEM"
+  private let collectionView: UICollectionView
+  private(set) var artists: [ArtistItem] = []
+  weak var delegate: ArtistsTableViewCellDelegate?
+  
+  init(reuseIdentifier: String?) {
+    let guessedMaximumCellHeight: CGFloat = 188
+    
+    let collectionViewLayout = UICollectionViewFlowLayout()
+    collectionViewLayout.scrollDirection = .horizontal
+    collectionViewLayout.itemSize = CGSize(width: 150, height: guessedMaximumCellHeight)
+    collectionViewLayout.minimumLineSpacing = 15
+    collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+    
+    super.init(style: .default, reuseIdentifier: reuseIdentifier)
+    
+    backgroundColor = .clear
+    
+    addSubview(collectionView)
+    
+    collectionView.showsHorizontalScrollIndicator = false
+    collectionView.contentInset.left = 15
+    collectionView.contentInset.right = 15
+    collectionView.backgroundColor = .clear
+    collectionView.delegate = self
+    collectionView.dataSource = self
+    
+    collectionView.translatesAutoresizingMaskIntoConstraints = false
+    
+    NSLayoutConstraint.activate([
+      collectionView.heightAnchor.constraint(equalToConstant: guessedMaximumCellHeight),
+      collectionView.topAnchor.constraint(equalTo: self.topAnchor),
+      collectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+      collectionView.leftAnchor.constraint(equalTo: self.leftAnchor),
+      collectionView.rightAnchor.constraint(equalTo: self.rightAnchor)
+    ])
+    
+    collectionView.register(ArtistCollectionViewCell.self, forCellWithReuseIdentifier: artistReuseIdentifier)
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  func updateInfo(artists: [ArtistItem]) {
+    self.artists = artists
+    collectionView.reloadData()
+  }
+}
+
+protocol ArtistsTableViewCellDelegate: class {
+  func artistsTableViewCell(_ tableViewCell: ArtistsTableViewCell, didSelectItemAtIndexPath indexPath: IndexPath)
+  func didReachTheEndAtArtistsTableViewCell(_ tableViewCell: ArtistsTableViewCell)
+}
+
+extension ArtistsTableViewCell: UICollectionViewDataSource {
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return artists.count
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let artist = artists[indexPath.row]
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: artistReuseIdentifier, for: indexPath) as! ArtistCollectionViewCell
+    cell.updateInfo(artistName: artist.name, artistImageUrl: artist.imageUrl ?? "")
+    return cell
+  }
+}
+
+extension ArtistsTableViewCell: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    delegate?.artistsTableViewCell(self, didSelectItemAtIndexPath: indexPath)
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    if indexPath.row == artists.count - 1 {
+      delegate?.didReachTheEndAtArtistsTableViewCell(self)
+    }
+  }
+}
+
+class ArtistCollectionViewCell: UICollectionViewCell {
+  private let artistImageView = UIImageView(frame: .zero)
+  private let artistNameLabel = UILabel()
+  
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    
+    addSubview(artistImageView)
+    addSubview(artistNameLabel)
+    
+    artistImageView.layer.cornerRadius = 75
+    artistImageView.clipsToBounds = true
+    artistImageView.contentMode = .scaleAspectFill
+    
+    artistNameLabel.textColor = .white
+    artistNameLabel.font = artistNameLabel.font.withSize(30)
+    artistNameLabel.font = UIFont(
+      descriptor: artistNameLabel.font.fontDescriptor.withSymbolicTraits([.traitBold])!,
+      size: 0
+    )
+    artistNameLabel.textAlignment = .center
+    artistNameLabel.adjustsFontSizeToFitWidth = true
+    
+    artistImageView.translatesAutoresizingMaskIntoConstraints = false
+    artistNameLabel.translatesAutoresizingMaskIntoConstraints = false
+    
+    NSLayoutConstraint.activate([
+      artistImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+      artistImageView.topAnchor.constraint(equalTo: self.topAnchor),
+      artistImageView.widthAnchor.constraint(equalTo: self.widthAnchor),
+      artistImageView.heightAnchor.constraint(equalTo: artistImageView.widthAnchor)
+    ])
+    
+    NSLayoutConstraint.activate([
+      artistNameLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 15),
+      artistNameLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -15),
+      artistNameLabel.topAnchor.constraint(equalTo: artistImageView.bottomAnchor, constant: 5)
+      // cannot stick to the bottom, gotta guess the height of the cell
+    ])
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  func updateInfo(artistName: String, artistImageUrl: String) {
+    artistNameLabel.text = artistName
+    artistImageView.sd_setImage(
+      with: URL(string: artistImageUrl),
+      placeholderImage: UIImage(named: "placeholder")
+    )
   }
 }

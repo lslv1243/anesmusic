@@ -132,10 +132,12 @@ class ApiClient {
   }
   
   // TODO: duplicate code with getTopArtists(genre:String,page:Int), what changes is the url
-  func getTopArtists(page: Int, search: String? = nil) -> Promise<[ArtistItem]> {
+  func getTopArtists(page: Int, search: String = "") -> Promise<[ArtistItem]> {
     return authenticator.getAccessToken()
       .then { accessToken -> Promise<[ArtistItem]> in
-        let url = "https://api.spotify.com/v1/search?q=\(search ?? "")&type=artist&limit=\(self.pageSize)&offset=\(self.pageSize * page)"
+        // TODO: how to query for every artists, when the api needs at least one character
+        let searchUrl = "\"\(search.isEmpty ? "a" : search)\"".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        let url = "https://api.spotify.com/v1/search?q=artist:\(searchUrl)&type=artist&limit=\(self.pageSize)&offset=\(self.pageSize * page)"
         
         var headers = HTTPHeaders()
         headers["Authorization"] = "Bearer \(accessToken)"
