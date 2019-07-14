@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		72112AB022DA0CBC00980691 /* HiddenNavbarTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72112AAF22DA0CBC00980691 /* HiddenNavbarTableViewController.swift */; };
+		72112AB222DAAC4C00980691 /* AnesColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72112AB122DAAC4C00980691 /* AnesColor.swift */; };
+		72112AB422DAAD0500980691 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72112AB322DAAD0500980691 /* SectionHeader.swift */; };
+		72112AB622DAB11400980691 /* TableViewCellSelectedBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72112AB522DAB11400980691 /* TableViewCellSelectedBackgroundView.swift */; };
 		7226E16122D3C12700370D23 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7226E16022D3C12700370D23 /* AppDelegate.swift */; };
 		7226E16322D3C12700370D23 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7226E16222D3C12700370D23 /* RootViewController.swift */; };
 		7226E16822D3C12900370D23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7226E16722D3C12900370D23 /* Assets.xcassets */; };
@@ -37,6 +40,9 @@
 
 /* Begin PBXFileReference section */
 		72112AAF22DA0CBC00980691 /* HiddenNavbarTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenNavbarTableViewController.swift; sourceTree = "<group>"; };
+		72112AB122DAAC4C00980691 /* AnesColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnesColor.swift; sourceTree = "<group>"; };
+		72112AB322DAAD0500980691 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
+		72112AB522DAB11400980691 /* TableViewCellSelectedBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCellSelectedBackgroundView.swift; sourceTree = "<group>"; };
 		7226E15D22D3C12700370D23 /* anesmusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = anesmusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7226E16022D3C12700370D23 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7226E16222D3C12700370D23 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -117,6 +123,9 @@
 				729D89AB22D52322001D7956 /* ArtistViewController.swift */,
 				72112AAF22DA0CBC00980691 /* HiddenNavbarTableViewController.swift */,
 				729D89AF22D8C6BB001D7956 /* AlbumViewController.swift */,
+				72112AB122DAAC4C00980691 /* AnesColor.swift */,
+				72112AB322DAAD0500980691 /* SectionHeader.swift */,
+				72112AB522DAB11400980691 /* TableViewCellSelectedBackgroundView.swift */,
 			);
 			path = anesmusic;
 			sourceTree = "<group>";
@@ -259,6 +268,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72112AB222DAAC4C00980691 /* AnesColor.swift in Sources */,
 				72112AB022DA0CBC00980691 /* HiddenNavbarTableViewController.swift in Sources */,
 				729D89AC22D52322001D7956 /* ArtistViewController.swift in Sources */,
 				72C0A1AA22D4D6D700E823FE /* GenresViewController.swift in Sources */,
@@ -266,8 +276,10 @@
 				7226E16322D3C12700370D23 /* RootViewController.swift in Sources */,
 				729D89B022D8C6BC001D7956 /* AlbumViewController.swift in Sources */,
 				7226E16122D3C12700370D23 /* AppDelegate.swift in Sources */,
+				72112AB422DAAD0500980691 /* SectionHeader.swift in Sources */,
 				72C0A1AE22D4F24100E823FE /* ArtistsViewController.swift in Sources */,
 				7226E18A22D3F31A00370D23 /* ApiClient.swift in Sources */,
+				72112AB622DAB11400980691 /* TableViewCellSelectedBackgroundView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

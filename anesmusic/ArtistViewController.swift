@@ -37,7 +37,7 @@ class ArtistViewController: HiddenNavbarTableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = UIColor(displayP3Red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)
+    view.backgroundColor = AnesColor.background
     tableView.separatorColor = .clear
     
     navigationItem.title = artist.name
@@ -88,6 +88,7 @@ class ArtistViewController: HiddenNavbarTableViewController {
       cell.textLabel!.text = genre.name
       cell.textLabel!.textColor = .white
       cell.backgroundColor = .clear
+      cell.selectedBackgroundView = TableViewCellSelectedBackgroundView()
       return cell
     case .albums:
       let cellIdentifier = "ALBUM_CELL"
@@ -101,6 +102,7 @@ class ArtistViewController: HiddenNavbarTableViewController {
       )
       cell.textLabel!.textColor = .white
       cell.backgroundColor = .clear
+      cell.selectedBackgroundView = TableViewCellSelectedBackgroundView()
       return cell
     }
   }
@@ -181,11 +183,11 @@ class ArtistInfoTableViewCell: UITableViewCell {
     addSubview(artistNameLabel)
     
     artistImageGradient.colors = [
-      UIColor(displayP3Red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0).cgColor,
+      AnesColor.background.cgColor,
       UIColor.black.withAlphaComponent(0.2).cgColor,
       UIColor.black.withAlphaComponent(0.1).cgColor,
       UIColor.black.withAlphaComponent(0.5).cgColor,
-      UIColor(displayP3Red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0).cgColor
+      AnesColor.background.cgColor
     ]
     artistImageView.layer.insertSublayer(artistImageGradient, at: 0)
     
@@ -321,39 +323,4 @@ protocol ArtistViewModelDelegate: class {
   func artistViewModelDidReload(error: Error?)
   func artistViewModelWillLoadMoreAlbums()
   func artistViewModelDidLoadMoreAlbums(error: Error?)
-}
-
-class SectionHeader: UIView {
-  private let titleLabel = UILabel()
-  
-  convenience init(title: String) {
-    self.init(frame: .zero)
-    
-    titleLabel.text = title
-  }
-  
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    
-    backgroundColor = UIColor(displayP3Red: 0.1, green: 0.1, blue: 0.1, alpha: 0.95)
-    
-    addSubview(titleLabel)
-    
-    titleLabel.textColor = .white
-    titleLabel.font = titleLabel.font.withSize(20)
-    titleLabel.textAlignment = .center
-    
-    titleLabel.translatesAutoresizingMaskIntoConstraints = false
-    
-    NSLayoutConstraint.activate([
-      titleLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 10),
-      titleLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10),
-      titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10),
-      titleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10)
-    ])
-  }
-  
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
 }

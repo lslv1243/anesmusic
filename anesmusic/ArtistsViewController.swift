@@ -33,9 +33,13 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    view.backgroundColor = AnesColor.background
+    tableView.separatorColor = .clear
+    
     navigationItem.title = genre.name
     
     refreshControl = UIRefreshControl()
+    refreshControl!.tintColor = .white
     tableView.refreshControl = refreshControl
     refreshControl!.addTarget(viewModel, action: #selector(viewModel.reload), for: .valueChanged)
     
@@ -53,8 +57,8 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
     navigationController!.pushViewController(albumsViewController, animated: true)
   }
   
-  override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    return "Top Artistas"
+  override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    return SectionHeader(title: "Top Artistas")
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -110,32 +114,34 @@ class ArtistTableViewCell: UITableViewCell {
   init(reuseIdentifier: String?) {
     super.init(style: .default, reuseIdentifier: reuseIdentifier)
     
+    backgroundColor = .clear
+    self.selectedBackgroundView = TableViewCellSelectedBackgroundView()
+    
     addSubview(artistImageView)
     addSubview(artistNameLabel)
     
     artistImageView.contentMode = .scaleAspectFill
     artistImageView.clipsToBounds = true
     artistImageView.translatesAutoresizingMaskIntoConstraints = false
+    artistImageView.layer.cornerRadius = 35
     
     artistNameLabel.font = artistNameLabel.font.withSize(30)
+    artistNameLabel.textColor = .white
     artistNameLabel.adjustsFontSizeToFitWidth = true
     artistNameLabel.translatesAutoresizingMaskIntoConstraints = false
     
     NSLayoutConstraint.activate([
-      self.heightAnchor.constraint(equalToConstant: 80)
-    ])
-    
-    NSLayoutConstraint.activate([
-      artistImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+      artistImageView.heightAnchor.constraint(equalToConstant: 70),
+      artistImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
       artistImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 5),
       artistImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5),
       artistImageView.widthAnchor.constraint(equalTo: artistImageView.heightAnchor)
     ])
     
     NSLayoutConstraint.activate([
-      artistNameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 5),
-      artistNameLabel.leadingAnchor.constraint(equalTo: artistImageView.trailingAnchor, constant: 10),
-      artistNameLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10)
+      artistNameLabel.centerYAnchor.constraint(equalTo: artistImageView.centerYAnchor),
+      artistNameLabel.leadingAnchor.constraint(equalTo: artistImageView.trailingAnchor, constant: 15),
+      artistNameLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -15)
     ])
   }
   
