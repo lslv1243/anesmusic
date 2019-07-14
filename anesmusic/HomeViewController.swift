@@ -12,6 +12,11 @@ class HomeViewController: UITableViewController {
   private let viewModel: HomeViewModel
   let apiClient: ApiClient
   
+  // since the navigation bar is hidden, it is not used to define the status bar style
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+    get { return .lightContent }
+  }
+  
   init(apiClient: ApiClient) {
     self.apiClient = apiClient
     viewModel = HomeViewModel(apiClient: apiClient)
@@ -39,6 +44,16 @@ class HomeViewController: UITableViewController {
     refreshControl!.addTarget(viewModel, action: #selector(viewModel.reload), for: .valueChanged)
     
     viewModel.reload()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    navigationController!.setNavigationBarHidden(true, animated: animated)
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    navigationController!.setNavigationBarHidden(false, animated: animated)
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
