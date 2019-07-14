@@ -76,7 +76,7 @@ class ArtistViewController: HiddenNavbarTableViewController {
       let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as? ArtistInfoTableViewCell
         ?? ArtistInfoTableViewCell(reuseIdentifier: cellIdentifier)
       cell.updateInfo(
-        imageUrl: viewModel.artist?.imageUrl ?? artist.imageUrl ?? "",
+        imageUrl: viewModel.artist?.imageUrl.highQuality ?? artist.imageUrl.highQuality ?? "",
         artistName: viewModel.artist?.name ?? artist.name
       )
       return cell
@@ -97,7 +97,7 @@ class ArtistViewController: HiddenNavbarTableViewController {
       let album = viewModel.albums[indexPath.row]
       cell.textLabel!.text = album.name
       cell.imageView!.sd_setImage(
-        with: URL(string: album.coverUrl),
+        with: album.coverUrl.lowQuality.flatMap { URL(string: $0) },
         placeholderImage: UIImage(named: "placeholder")
       )
       cell.textLabel!.textColor = .white

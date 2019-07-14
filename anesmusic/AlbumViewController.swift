@@ -80,7 +80,7 @@ class AlbumViewController: UITableViewController {
       let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? AlbumCoverTableViewCell
         ?? AlbumCoverTableViewCell(reuseIdentifier: reuseIdentifier)
       cell.updateInfo(
-        coverUrl: albumInfo?.coverUrl ?? album.coverUrl,
+        coverUrl: albumInfo?.coverUrl.mediumQuality ?? album.coverUrl.mediumQuality ?? "",
         albumName: albumInfo?.name ?? album.name,
         releaseYear: albumInfo?.releaseYear ?? album.releaseYear
       )

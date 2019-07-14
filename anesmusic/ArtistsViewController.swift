@@ -152,7 +152,7 @@ class ArtistTableViewCell: UITableViewCell {
   func updateInfo(artist: ArtistItem) {
     artistNameLabel.text = artist.name
     artistImageView.sd_setImage(
-      with: URL(string: artist.imageUrl ?? ""),
+      with: URL(string: artist.imageUrl.lowQuality ?? ""),
       placeholderImage: UIImage(named: "placeholder")
     )
   }

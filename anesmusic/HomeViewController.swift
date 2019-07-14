@@ -44,6 +44,7 @@ class HomeViewController: UITableViewController {
     refreshControl!.addTarget(viewModel, action: #selector(viewModel.reload), for: .valueChanged)
     
     viewModel.reload()
+    refreshControl!.endRefreshing()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -385,7 +386,7 @@ extension ArtistsTableViewCell: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let artist = artists[indexPath.row]
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: artistReuseIdentifier, for: indexPath) as! ArtistCollectionViewCell
-    cell.updateInfo(artistName: artist.name, artistImageUrl: artist.imageUrl ?? "")
+    cell.updateInfo(artistName: artist.name, artistImageUrl: artist.imageUrl.mediumQuality ?? "")
     return cell
   }
 }

@@ -11,6 +11,32 @@ import Alamofire
 import PromiseKit
 import PMKAlamofire
 
+struct ImageUrl {
+  let lowQuality: String?
+  private var _mediumQuality: String?
+  private var _highQuality: String?
+  
+  var mediumQuality: String? {
+    return _mediumQuality ?? lowQuality
+  }
+  
+  var highQuality: String? {
+    return _highQuality ?? mediumQuality
+  }
+  
+  init(urls: [String]) {
+    _highQuality = urls.count >= 1
+      ? urls[0]
+      : nil
+    _mediumQuality = urls.count >= 2
+      ? urls[1]
+      : nil
+    lowQuality = urls.count >= 3
+      ? urls[2]
+      : nil
+  }
+}
+
 struct GenreItem {
   let name: String
 }
@@ -18,27 +44,27 @@ struct GenreItem {
 struct ArtistItem {
   let id: String
   let name: String
-  let imageUrl: String?
+  let imageUrl: ImageUrl
 }
 
 struct ArtistInfo {
   let id: String
   let name: String
-  let imageUrl: String
+  let imageUrl: ImageUrl
   let genres: [GenreItem]
 }
 
 struct AlbumItem {
   let id: String
   let name: String
-  let coverUrl: String
+  let coverUrl: ImageUrl
   let releaseYear: String
 }
 
 struct AlbumInfo {
   let id: String
   let name: String
-  let coverUrl: String
+  let coverUrl: ImageUrl
   let releaseYear: String
   let genres: [GenreItem]
 }
@@ -124,7 +150,7 @@ class ApiClient {
               return ArtistItem(
                 id: item.id,
                 name: item.name,
-                imageUrl: item.images.last?.url
+                imageUrl: ImageUrl(urls: item.images.map { $0.url })
               )
             }
           }
@@ -173,7 +199,7 @@ class ApiClient {
               return ArtistItem(
                 id: item.id,
                 name: item.name,
-                imageUrl: item.images.last?.url
+                imageUrl: ImageUrl(urls: item.images.map { $0.url })
               )
             }
         }
@@ -215,7 +241,7 @@ class ApiClient {
               return AlbumItem(
                 id: item.id,
                 name: item.name,
-                coverUrl: item.images.last?.url ?? "",
+                coverUrl: ImageUrl(urls: item.images.map { $0.url }),
                 releaseYear: String(item.release_date.split(separator: "-").first!)
               )
             }
@@ -254,7 +280,7 @@ class ApiClient {
             return ArtistInfo(
               id: data.id,
               name: data.name,
-              imageUrl: data.images.first!.url,
+              imageUrl: ImageUrl(urls: data.images.map { $0.url }),
               genres: data.genres.map { GenreItem(name: $0) }
             )
           }
@@ -294,7 +320,7 @@ class ApiClient {
             return AlbumInfo(
               id: data.id,
               name: data.name,
-              coverUrl: data.images.first!.url,
+              coverUrl: ImageUrl(urls: data.images.map { $0.url }),
               releaseYear: String(data.release_date.split(separator: "-").first!),
               genres: data.genres.map { GenreItem(name: $0) }
             )
