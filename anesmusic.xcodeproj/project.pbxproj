@@ -21,7 +21,7 @@
 		729D89AA22D520A2001D7956 /* InfinityScrollViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729D89A922D520A2001D7956 /* InfinityScrollViewModel.swift */; };
 		729D89AC22D52322001D7956 /* ArtistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729D89AB22D52322001D7956 /* ArtistViewController.swift */; };
 		729D89B022D8C6BC001D7956 /* AlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729D89AF22D8C6BB001D7956 /* AlbumViewController.swift */; };
-		72C0A1AA22D4D6D700E823FE /* GenresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C0A1A922D4D6D700E823FE /* GenresViewController.swift */; };
+		72C0A1AA22D4D6D700E823FE /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C0A1A922D4D6D700E823FE /* HomeViewController.swift */; };
 		72C0A1AE22D4F24100E823FE /* ArtistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C0A1AD22D4F24100E823FE /* ArtistsViewController.swift */; };
 		72C0A1B222D4F3CE00E823FE /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72C0A1AF22D4F3CE00E823FE /* Alamofire.framework */; };
 		72C0A1B322D4F3CE00E823FE /* PMKAlamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72C0A1B022D4F3CE00E823FE /* PMKAlamofire.framework */; };
@@ -57,7 +57,7 @@
 		729D89A922D520A2001D7956 /* InfinityScrollViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfinityScrollViewModel.swift; sourceTree = "<group>"; };
 		729D89AB22D52322001D7956 /* ArtistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistViewController.swift; sourceTree = "<group>"; };
 		729D89AF22D8C6BB001D7956 /* AlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumViewController.swift; sourceTree = "<group>"; };
-		72C0A1A922D4D6D700E823FE /* GenresViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenresViewController.swift; sourceTree = "<group>"; };
+		72C0A1A922D4D6D700E823FE /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		72C0A1AD22D4F24100E823FE /* ArtistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistsViewController.swift; sourceTree = "<group>"; };
 		72C0A1AF22D4F3CE00E823FE /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		72C0A1B022D4F3CE00E823FE /* PMKAlamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PMKAlamofire.framework; path = Carthage/Build/iOS/PMKAlamofire.framework; sourceTree = "<group>"; };
@@ -117,7 +117,7 @@
 				7226E16922D3C12900370D23 /* LaunchScreen.storyboard */,
 				7226E16C22D3C12900370D23 /* Info.plist */,
 				7226E18922D3F31A00370D23 /* ApiClient.swift */,
-				72C0A1A922D4D6D700E823FE /* GenresViewController.swift */,
+				72C0A1A922D4D6D700E823FE /* HomeViewController.swift */,
 				72C0A1AD22D4F24100E823FE /* ArtistsViewController.swift */,
 				729D89A922D520A2001D7956 /* InfinityScrollViewModel.swift */,
 				729D89AB22D52322001D7956 /* ArtistViewController.swift */,
@@ -271,7 +271,7 @@
 				72112AB222DAAC4C00980691 /* AnesColor.swift in Sources */,
 				72112AB022DA0CBC00980691 /* HiddenNavbarTableViewController.swift in Sources */,
 				729D89AC22D52322001D7956 /* ArtistViewController.swift in Sources */,
-				72C0A1AA22D4D6D700E823FE /* GenresViewController.swift in Sources */,
+				72C0A1AA22D4D6D700E823FE /* HomeViewController.swift in Sources */,
 				729D89AA22D520A2001D7956 /* InfinityScrollViewModel.swift in Sources */,
 				7226E16322D3C12700370D23 /* RootViewController.swift in Sources */,
 				729D89B022D8C6BC001D7956 /* AlbumViewController.swift in Sources */,

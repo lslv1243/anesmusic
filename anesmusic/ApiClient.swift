@@ -131,6 +131,53 @@ class ApiClient {
       }
   }
   
+  // TODO: duplicate code with getTopArtists(genre:String,page:Int), what changes is the url
+  func getTopArtists(page: Int, search: String? = nil) -> Promise<[ArtistItem]> {
+    return authenticator.getAccessToken()
+      .then { accessToken -> Promise<[ArtistItem]> in
+        let url = "https://api.spotify.com/v1/search?q=\(search ?? "")&type=artist&limit=\(self.pageSize)&offset=\(self.pageSize * page)"
+        
+        var headers = HTTPHeaders()
+        headers["Authorization"] = "Bearer \(accessToken)"
+        
+        struct Response: Decodable {
+          let artists: Artists
+          
+          struct Artists: Decodable {
+            let items: [Item]
+          }
+          
+          struct Item: Decodable {
+            let id: String
+            let name: String
+            let images: [Image]
+          }
+          
+          struct Image: Decodable {
+            let url: String
+          }
+        }
+        
+        return Alamofire
+          .request(
+            url,
+            method: .get,
+            headers: headers
+          )
+          .responseData()
+          .map { response in
+            let data = try! self.decoder.decode(Response.self, from: response.data)
+            return data.artists.items.map { item in
+              return ArtistItem(
+                id: item.id,
+                name: item.name,
+                imageUrl: item.images.last?.url
+              )
+            }
+        }
+      }
+  }
+  
   func getTopAlbums(artistId: String, page: Int) -> Promise<[AlbumItem]> {
     return authenticator.getAccessToken()
       .then { accessToken -> Promise<[AlbumItem]> in
