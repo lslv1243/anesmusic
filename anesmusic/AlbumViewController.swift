@@ -158,7 +158,7 @@ class AlbumCoverTableViewCell: UITableViewCell {
     
     coverImageView.layer.cornerRadius = 5
     coverImageView.layer.masksToBounds = true
-    coverImageView.contentMode = .scaleToFill
+    coverImageView.contentMode = .scaleAspectFill
     
     albumNameLabel.font = albumNameLabel.font.withSize(30)
     albumNameLabel.textColor = .white
