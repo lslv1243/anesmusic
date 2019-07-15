@@ -22,7 +22,7 @@ class RootViewController: UINavigationController {
     navigationBar.barStyle = .black
     navigationBar.tintColor = .white
     
-    pushViewController(HomeViewController(apiClient: apiClient), animated: false)
+    pushViewController(SearchableHomeViewController(apiClient: apiClient), animated: false)
   }
 }
 
