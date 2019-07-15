@@ -13,21 +13,23 @@ class InfinityScrollViewModel<T> {
   private(set) var isFetching = false
   private(set) var hasMore = true
   private(set) var items: [T] = []
+  private var search: String = ""
   weak var delegate: InfinityScrollViewModelDelegate?
   
-  private let fetchPage: (_ page: Int) -> Promise<[T]>
+  private let fetchPage: (_ page: Int, _ search: String) -> Promise<[T]>
   
-  init(fetchPage: @escaping (_ page: Int) -> Promise<[T]>) {
+  init(fetchPage: @escaping (_ page: Int, _ search: String) -> Promise<[T]>) {
     self.fetchPage = fetchPage
   }
   
-  @objc func reload() {
+  @objc func reload(search: String = "") {
     guard !isFetching else { return }
     
     isFetching = true
     delegate?.infinityScrollViewModelWillReload()
+    self.search = search
     currentPage = 0
-    fetchPage(0)
+    fetchPage(0, search)
       .ensure {
         self.isFetching = false
       }
@@ -46,7 +48,7 @@ class InfinityScrollViewModel<T> {
     isFetching = true
     delegate?.infinityScrollViewModelWillLoadMore()
     currentPage += 1
-    fetchPage(currentPage)
+    fetchPage(currentPage, search)
       .done { items in
         self.hasMore = items.count != 0
         self.items.append(contentsOf: items)

@@ -8,14 +8,12 @@
 
 import UIKit
 
-class HomeViewController: UITableViewController {
-  private let viewModel: HomeViewModel
+class HomeViewController: UITableViewController, ArtistsTableViewCellDelegate, GenresTableViewCellDelegate {
+  let viewModel: HomeViewModel
   let apiClient: ApiClient
-  
-  // since the navigation bar is hidden, it is not used to define the status bar style
-  override var preferredStatusBarStyle: UIStatusBarStyle {
-    get { return .lightContent }
-  }
+  let genresDelegateProxy = GenresTableViewCellDelegateProxy()
+  let artistsDelegateProxy = ArtistsTableViewCellDelegateProxy()
+  var hideSections = false
   
   init(apiClient: ApiClient) {
     self.apiClient = apiClient
@@ -24,6 +22,8 @@ class HomeViewController: UITableViewController {
     super.init(nibName: nil, bundle: nil)
     
     viewModel.delegate = self
+    genresDelegateProxy.proxy = self
+    artistsDelegateProxy.proxy = self
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -47,16 +47,6 @@ class HomeViewController: UITableViewController {
     refreshControl!.endRefreshing()
   }
   
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    navigationController!.setNavigationBarHidden(true, animated: animated)
-  }
-  
-  override func viewWillDisappear(_ animated: Bool) {
-    super.viewWillDisappear(animated)
-    navigationController!.setNavigationBarHidden(false, animated: animated)
-  }
-  
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     switch (HomeViewControllerSection(rawValue: indexPath.section)!) {
     case .genres:
@@ -64,22 +54,30 @@ class HomeViewController: UITableViewController {
       let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? GenresTableViewCell
         ?? GenresTableViewCell(reuseIdentifier: reuseIdentifier)
       cell.updateInfo(genres: viewModel.genres)
-      cell.delegate = self
+      cell.delegate = genresDelegateProxy
       return cell
     case .artists:
       let reuseIdentifier = "ARTISTS_CELL"
       let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) as? ArtistsTableViewCell
         ?? ArtistsTableViewCell(reuseIdentifier: reuseIdentifier)
       cell.updateInfo(artists: viewModel.artists)
-      cell.delegate = self
+      cell.delegate = artistsDelegateProxy
+      cell.dataSource = self
       return cell
+    }
+  }
+  
+  override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    switch (HomeViewControllerSection(rawValue: section)!) {
+    case .genres: return viewModel.genres.count > 0 ? UITableView.automaticDimension : 0
+    case .artists: return viewModel.artists.count > 0 ? UITableView.automaticDimension : 0
     }
   }
   
   override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     switch (HomeViewControllerSection(rawValue: section)!) {
-    case .genres: return SectionHeader(title: "Gêneros")
-    case .artists: return SectionHeader(title: "Artistas")
+    case .genres: return viewModel.genres.count > 0 ? SectionHeader(title: "Gêneros") : nil
+    case .artists: return viewModel.artists.count > 0 ? SectionHeader(title: "Artistas") : nil
     }
   }
   
@@ -88,7 +86,22 @@ class HomeViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 1
+    switch (HomeViewControllerSection(rawValue: section)!) {
+    case .genres: return viewModel.genres.count > 0 ? 1 : 0
+    case .artists: return viewModel.artists.count > 0 ? 1 : 0
+    }
+  }
+  
+  func genresTableViewCell(_ tableViewCell: GenresTableViewCell, didSelectItemAtIndexPath indexPath: IndexPath) {
+    let genre = viewModel.genres[indexPath.row]
+    let artistsViewController = ArtistsViewController(apiClient: apiClient, genre: genre)
+    navigationController!.pushViewController(artistsViewController, animated: true)
+  }
+
+  func artistsTableViewCell(_ tableViewCell: ArtistsTableViewCell, didSelectItemAtIndexPath indexPath: IndexPath) {
+    let artist = viewModel.artists[indexPath.row]
+    let artistViewController = ArtistViewController(apiClient: apiClient, artist: artist)
+    navigationController!.pushViewController(artistViewController, animated: true)
   }
 }
 
@@ -98,14 +111,14 @@ enum HomeViewControllerSection: Int, CaseIterable {
 
 extension HomeViewController: HomeViewModelDelegate {
   func homeViewModelWillReload() {
-    refreshControl!.beginRefreshing()
+    refreshControl?.beginRefreshing()
   }
   
   func homeViewModelDidReload(error: Error?) {
     if error == nil {
       tableView.reloadData()
     }
-    refreshControl!.endRefreshing()
+    refreshControl?.endRefreshing()
   }
   
   func homeViewModelWillLoadMoreArtists() {
@@ -116,22 +129,8 @@ extension HomeViewController: HomeViewModelDelegate {
   }
 }
 
-extension HomeViewController: GenresTableViewCellDelegate {
-  func genresTableViewCell(_ tableViewCell: GenresTableViewCell, didSelectItemAtIndexPath indexPath: IndexPath) {
-    let genre = viewModel.genres[indexPath.row]
-    let artistsViewController = ArtistsViewController(apiClient: apiClient, genre: genre)
-    navigationController!.pushViewController(artistsViewController, animated: true)
-  }
-}
-
-extension HomeViewController: ArtistsTableViewCellDelegate {
-  func artistsTableViewCell(_ tableViewCell: ArtistsTableViewCell, didSelectItemAtIndexPath indexPath: IndexPath) {
-    let artist = viewModel.artists[indexPath.row]
-    let artistViewController = ArtistViewController(apiClient: apiClient, artist: artist)
-    navigationController!.pushViewController(artistViewController, animated: true)
-  }
-  
-  func didReachTheEndAtArtistsTableViewCell(_ tableViewCell: ArtistsTableViewCell) {
+extension HomeViewController: ArtistsTableViewCellDataSource {
+  func shouldLoadMoreForArtistsTableViewCell(_ tableViewCell: ArtistsTableViewCell) {
     viewModel.loadMoreArtists()
   }
 }
@@ -150,8 +149,8 @@ class HomeViewModel {
   weak var delegate: HomeViewModelDelegate?
   
   init(apiClient: ApiClient) {
-    infinityArtists = InfinityScrollViewModel { page in
-      apiClient.getTopArtists(page: page)
+    infinityArtists = InfinityScrollViewModel { page, search in
+      apiClient.getTopArtists(page: page, search: search)
     }
     
     self.apiClient = apiClient
@@ -159,16 +158,20 @@ class HomeViewModel {
     infinityArtists.delegate = self
   }
   
-  @objc func reload() {
+  @objc func reload(search: String = "") {
     guard !isFetching else { return }
     
     isFetchingGenres = true
     delegate?.homeViewModelWillReload()
-    infinityArtists.reload()
+    infinityArtists.reload(search: search)
     apiClient.getTopGenres()
       .ensure { self.isFetchingGenres = false }
       .done { genres in
-        self.genres = genres
+        var filteredGenres = genres
+        if !search.isEmpty {
+          filteredGenres = filteredGenres.filter { $0.name.contains(search) }
+        }
+        self.genres = filteredGenres
         if !self.infinityArtists.isFetching {
           self.delegate?.homeViewModelDidReload(error: nil)
         }
@@ -266,6 +269,14 @@ protocol GenresTableViewCellDelegate: class {
   func genresTableViewCell(_ tableViewCell: GenresTableViewCell, didSelectItemAtIndexPath indexPath: IndexPath)
 }
 
+class GenresTableViewCellDelegateProxy: GenresTableViewCellDelegate {
+  var proxy: GenresTableViewCellDelegate?
+  
+  func genresTableViewCell(_ tableViewCell: GenresTableViewCell, didSelectItemAtIndexPath indexPath: IndexPath) {
+    proxy?.genresTableViewCell(tableViewCell, didSelectItemAtIndexPath: indexPath)
+  }
+}
+
 extension GenresTableViewCell: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return genres.count
@@ -327,6 +338,7 @@ class ArtistsTableViewCell: UITableViewCell {
   private let collectionView: UICollectionView
   private(set) var artists: [ArtistItem] = []
   weak var delegate: ArtistsTableViewCellDelegate?
+  weak var dataSource: ArtistsTableViewCellDataSource?
   
   init(reuseIdentifier: String?) {
     let guessedMaximumCellHeight: CGFloat = 188
@@ -375,7 +387,18 @@ class ArtistsTableViewCell: UITableViewCell {
 
 protocol ArtistsTableViewCellDelegate: class {
   func artistsTableViewCell(_ tableViewCell: ArtistsTableViewCell, didSelectItemAtIndexPath indexPath: IndexPath)
-  func didReachTheEndAtArtistsTableViewCell(_ tableViewCell: ArtistsTableViewCell)
+}
+
+protocol ArtistsTableViewCellDataSource: class {
+  func shouldLoadMoreForArtistsTableViewCell(_ tableViewCell: ArtistsTableViewCell)
+}
+
+class ArtistsTableViewCellDelegateProxy: ArtistsTableViewCellDelegate {
+  var proxy: ArtistsTableViewCellDelegate?
+  
+  func artistsTableViewCell(_ tableViewCell: ArtistsTableViewCell, didSelectItemAtIndexPath indexPath: IndexPath) {
+    proxy?.artistsTableViewCell(tableViewCell, didSelectItemAtIndexPath: indexPath)
+  }
 }
 
 extension ArtistsTableViewCell: UICollectionViewDataSource {
@@ -398,7 +421,7 @@ extension ArtistsTableViewCell: UICollectionViewDelegate {
   
   func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
     if indexPath.row == artists.count - 1 {
-      delegate?.didReachTheEndAtArtistsTableViewCell(self)
+      dataSource?.shouldLoadMoreForArtistsTableViewCell(self)
     }
   }
 }
