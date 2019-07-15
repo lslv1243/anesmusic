@@ -263,7 +263,7 @@ class ArtistViewModel {
   init(apiClient: ApiClient, artistItem: ArtistItem) {
     self.apiClient = apiClient
     self.artistItem = artistItem
-    infinityScroll = InfinityScrollViewModel { page in
+    infinityScroll = InfinityScrollViewModel { page, _ in
       apiClient.getTopAlbums(artistId: artistItem.id, page: page)
     }
     infinityScroll.delegate = self

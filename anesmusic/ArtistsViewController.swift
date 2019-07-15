@@ -17,7 +17,7 @@ class ArtistsViewController: UITableViewController, UITableViewDataSourcePrefetc
   init(apiClient: ApiClient, genre: GenreItem) {
     self.apiClient = apiClient
     self.genre = genre
-    viewModel = InfinityScrollViewModel { page in
+    viewModel = InfinityScrollViewModel { page, _ in
       apiClient.getTopArtists(genre: genre.name, page: page)
     }
     
